@@ -2,19 +2,12 @@ package assignemt4.ui;
 
 import assignemt4.api.DirectedWeightedGraphAlgorithms;
 import assignemt4.api.EdgeData;
-import assignemt4.api.GeoLocation;
 import assignemt4.api.NodeData;
 import assignemt4.ex4_java_client.Client;
-import assignemt4.impl.AgentDs;
-import assignemt4.impl.DirectedWeightedGraphImpl;
 import assignemt4.models.Agent;
-import assignemt4.models.GeoLocationImpl;
-import assignemt4.models.NodeDataImpl;
 import assignemt4.models.Pokemon;
-import assignemt4.ui.utils.Range2Range;
 
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -38,7 +31,6 @@ public class GraphViewModel {
     private ActionListener actionListener;
     private ExecutorService pool;
     private Client client;
-    private HashMap<Integer, AgentDs> agentsDs;
     private AgentsBrain brain;
 
     public GraphViewModel(DirectedWeightedGraphAlgorithms graphAlg, ActionListener actionListener, Client client) {
@@ -47,10 +39,6 @@ public class GraphViewModel {
         this.client = client;
         pool = Executors.newFixedThreadPool(N_THREADS);
         init();
-        agentsDs = new HashMap<>();
-        for (Agent agent : agents.values()) {
-            this.agentsDs.put(agent.getId(), new AgentDs(agent, algo));
-        }
         this.brain = new AgentsBrain(algo, pokemons, client, actionListener);
 
         client.start();
