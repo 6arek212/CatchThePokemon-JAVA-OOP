@@ -125,7 +125,7 @@ public class GameRunner implements Runnable {
 
         }
         listPriorityQueue.clear();
-        nextDis(game, pokemons, agents);
+        nextDis(game, agents);
 
     }
 
@@ -146,17 +146,17 @@ public class GameRunner implements Runnable {
 
 
     //    for each agent attach to him his path
-    private static void nextDis(Client game, List<Pokemon> poks, List<Agent> age) {
+    private static void nextDis(Client game, List<Agent> age) {
 
-        for (int i = 0; i < age.size(); i++) { // pass the agents
+        for (int i = 0; i < age.size(); i++) {
 
-            Agent agent = age.get(i); //get the actual agent
+            Agent agent = age.get(i);
             List<NodeData> path = agent.getAgentCurrPath();
-            int id = agent.getId(); //get the agent id (same like j index)
+            int id = agent.getId();
             System.out.println("--->" + path);
-            if (!path.isEmpty()) { // if its path isn't empty
-                int next = path.remove(0).getKey();//remove and get the next node from the agent path list
-                agent.setNextNode(next); //set the next node to be it
+            if (!path.isEmpty()) {
+                int next = path.remove(0).getKey();
+                agent.setNextNode(next);
 
                 game.chooseNextEdge("{\"agent_id\":0, \"next_node_id\": " + next + "}");
                 System.out.println("Agent: " + id + ", value: " + agent.getValue() + " srcNode: " + agent.getSrcNode() + " destNode: " + next + " agent Speed: " + agent.getSpeed());
@@ -166,7 +166,8 @@ public class GameRunner implements Runnable {
         }
     }
 
-
+    //compute distance between each agent and pok [pok , agent , dist]
+    // to take give the best agent to a pok
     public void computeDistance(List<Pokemon> pokemons, List<Agent> agents, DirectedWeightedGraph g) {
         gameWorld.updatePokemonsEdges(pokemons);
 
