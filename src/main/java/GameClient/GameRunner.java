@@ -2,6 +2,7 @@ package GameClient;
 
 
 import GameClient.utils.Point;
+import GameGui.GameFrame;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.NodeData;
@@ -24,6 +25,7 @@ public class GameRunner implements Runnable {
     private static DirectedWeightedGraph g;
     //    DirectedWeightedGraphAlgorithms aglo;
     private static GameWorld gameWorld;
+    private static GameFrame gameFrame;
     //    private static Client game;
     private static PriorityQueue<double[]> sp = new PriorityQueue<>(Comparator.comparingDouble(o -> (o[2])));
     //priority Queue for shortest dis agent and pokemon using
@@ -46,25 +48,36 @@ public class GameRunner implements Runnable {
             e.printStackTrace();
         }
 //        game.login(id);
+
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DirectedWeightedGraph.class, new jsonToGraphGame());
         Gson gson = builder.create();
         g = gson.fromJson(game.getGraph(), DirectedWeightedGraph.class);
         initGame(game);
         DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl(g);
+//        gameFrame = new GameFrame(gameWorld);
         ga.init(g);//now we can do algo on the game  graph
         game.addAgent("{\"id\":0}");
+        game.addAgent("{\"id\":1}");
+        game.addAgent("{\"id\":2}");
 //        game.startGame();
 
         game.start();
 
         int dtt;
+        int ind = 0;
 
         while (game.isRunning().equals("true")) {
             moveAgents(game);
             dtt = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
             try {
+                if (ind % 1 == 0) {
+
+                    gameFrame.repaint();
+
+                }
                 Thread.sleep(dtt);
+                ind++;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -215,7 +228,8 @@ public class GameRunner implements Runnable {
         gameWorld = new GameWorld();
         gameWorld.setGraph(g);
         gameWorld.setPokemons(GameWorld.json2Pokemons(pokz));
-
+        gameWorld.setAgents(GameWorld.getAgents(game.getAgents(), g));
+        gameFrame = new GameFrame(gameWorld);
         String info = game.getInfo();
         JSONObject line;
         try {
@@ -226,12 +240,11 @@ public class GameRunner implements Runnable {
             cl_fs.sort(Comparator.comparingInt(o -> (int) o.getValue()));
             gameWorld.updatePokemonsEdges(cl_fs);
 
-
             for (int i = 0; i < agentsSize; i++) {
                 Pokemon c = cl_fs.get(i);
                 int sn = c.getEdge().getSrc();
                 game.addAgent("{\"id\":" + i + "}");
-                game.addAgent("{\"id\":2}");
+//                game.addAgent("{\"id\":1}");
             }
 
         } catch (JSONException e) {
