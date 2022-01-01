@@ -21,6 +21,7 @@ public class GameFrame extends JFrame {
 //        gameWorld = new GameWorld();
 
         gamePanel = new GamePanel(gameWorld);
+
         this.add(gamePanel);
         this.setTitle("Graph");
         this.setSize(1000, 700);

@@ -59,7 +59,7 @@ public class GameRunner implements Runnable {
         ga.init(g);//now we can do algo on the game  graph
         game.addAgent("{\"id\":0}");
         game.addAgent("{\"id\":1}");
-        game.addAgent("{\"id\":2}");
+//        game.addAgent("{\"id\":2}");
 //        game.startGame();
 
         game.start();
@@ -104,8 +104,10 @@ public class GameRunner implements Runnable {
         computeDistance(pokemons, agents, g);
         int count = 0;
         while (!listPriorityQueue.isEmpty() && count < agents.size()) {
+            System.out.println(listPriorityQueue);
 
             List<Double> minAgentPok = listPriorityQueue.poll();
+            System.out.println(minAgentPok);
             //getting the pokemon index in pokemons list
             double p = minAgentPok.get(0);
             double a = minAgentPok.get(1);
@@ -240,12 +242,12 @@ public class GameRunner implements Runnable {
             cl_fs.sort(Comparator.comparingInt(o -> (int) o.getValue()));
             gameWorld.updatePokemonsEdges(cl_fs);
 
-            for (int i = 0; i < agentsSize; i++) {
-                Pokemon c = cl_fs.get(i);
-                int sn = c.getEdge().getSrc();
-                game.addAgent("{\"id\":" + i + "}");
-//                game.addAgent("{\"id\":1}");
-            }
+//            for (int i = 0; i < agentsSize; i++) {
+//                Pokemon c = cl_fs.get(i);
+//                int sn = c.getEdge().getSrc();
+//                game.addAgent("{\"id\":" + i + "}");
+////                game.addAgent("{\"id\":1}");
+//            }
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -38,7 +38,7 @@ public class GamePanel extends JPanel {
     private final int NODE_SIZE = 10; // need to be even
     private final int ARROW_SIZE = NODE_SIZE - 2;
     private final JCheckBox show_pokemons_values = new JCheckBox("pokemons values");
-    private Image image, image2;
+    private Image image, image2, image3, BackRoundImage;
 
     GamePanel(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -49,7 +49,7 @@ public class GamePanel extends JPanel {
 
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\ball.gif"))).getImage();
         image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\nezu.gif"))).getImage();
-
+        image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\pika.png"))).getImage();
 
 
     }
@@ -91,21 +91,24 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         updateFrame();
-        Iterator<NodeData> iter = graph.nodeIter();
-        while (iter.hasNext()) {
-            NodeDataImpl n = (NodeDataImpl) iter.next();
+        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\back.jpg"))).getImage();
 
+        g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+        for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {
+            EdgeData edgeData = it.next();
+            drawEdge(edgeData, g);
 
-            n.setNodeState(Color.RED);
-            drawNode((NodeDataImpl) n, 7, g);
-            Iterator<EdgeData> itr = graph.edgeIter(n.getKey());
-            while (itr.hasNext()) {
-                EdgeData e = itr.next();
-
-
-                drawEdge(e, g);
-            }
         }
+
+        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
+            NodeData nodeData = it.next();
+            drawNode((NodeDataImpl) nodeData, 15, g);
+
+
+        }
+
+
+//        this.repaint();
         drawAgents(g2d);
         drawPokemons(g2d);
 
@@ -119,11 +122,11 @@ public class GamePanel extends JPanel {
         GeoLocation s0 = this.WorldToFrame.worldToframe((Point) s);
         GeoLocation d0 = this.WorldToFrame.worldToframe((Point) d);
         Line2D line = new Line2D.Double((int) s0.x(), (int) s0.y(), (int) d0.x(), (int) d0.y());
-        g2d.setStroke(new BasicStroke(3));
-        g2d.setColor(Color.ORANGE);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.setColor(Color.BLACK);
         g2d.fill(line);
         g2d.draw(line);
-        g.setColor(Color.yellow);
+
 //        g.fillRect(((int) (s0.x() + 7 * d0.x()) / 8 - ARROW_SIZE / 2), (int) ((s0.y() + 7 * d0.y()) / 8 - ARROW_SIZE / 2), ARROW_SIZE, ARROW_SIZE);
 
         if (e.getWeight() != 0) {
@@ -172,9 +175,10 @@ public class GamePanel extends JPanel {
         GeoLocation fp = this.WorldToFrame.worldToframe((Point) pos);
 
         Shape node = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
-        g2d.setColor(n.getNodeState());
-        n.setVisualNode(node);
-        g2d.fill(node);
+        g.drawImage(image3, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
+//        g2d.setColor(n.getNodeState());
+//        n.setVisualNode(node);
+//        g2d.fill(node);
         g.setFont(new Font("David", Font.PLAIN, 15));
         g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() - 4 * r);
 
