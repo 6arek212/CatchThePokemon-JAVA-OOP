@@ -2,6 +2,8 @@ package assignemt4.models;
 
 import assignemt4.api.GeoLocation;
 
+import java.util.Objects;
+
 public class GeoLocationImpl implements GeoLocation {
     private double x;
     private double y;
@@ -47,6 +49,19 @@ public class GeoLocationImpl implements GeoLocation {
     public double distance(GeoLocation g) {
         double d = Math.pow((this.x - g.x()), 2) + Math.pow((this.y - g.y()), 2) + Math.pow((this.z - g.z()), 2);
         return Math.sqrt(d);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeoLocationImpl that = (GeoLocationImpl) o;
+        return Double.compare(that.x, x) == 0 && Double.compare(that.y, y) == 0 && Double.compare(that.z, z) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 
     @Override

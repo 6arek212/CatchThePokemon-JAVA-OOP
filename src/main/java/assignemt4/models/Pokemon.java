@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class Pokemon {
     private double value;
@@ -19,6 +20,7 @@ public class Pokemon {
     @SerializedName("pos")
     private GeoLocation location;
     private EdgeData edge;
+    private boolean isCaptured;
 
     public Pokemon(PokemonJson.PokemonJsonInner pokemonJsonInner) {
         this.value = pokemonJsonInner.value;
@@ -28,12 +30,17 @@ public class Pokemon {
     }
 
     public static List<Pokemon> load(String json) {
-        PokemonJson dgj = new Gson().fromJson(json, PokemonJson.class);
-        List<Pokemon> pokemons = new ArrayList<>();
-        for (int i = 0; i < dgj.getPokemonJsonWrappers().size(); i++) {
-            pokemons.add(new Pokemon(dgj.getPokemonJsonWrappers().get(i).getPokemon()));
+        try {
+            PokemonJson dgj = new Gson().fromJson(json, PokemonJson.class);
+            List<Pokemon> pokemons = new ArrayList<>();
+            for (int i = 0; i < dgj.getPokemonJsonWrappers().size(); i++) {
+                pokemons.add(new Pokemon(dgj.getPokemonJsonWrappers().get(i).getPokemon()));
+            }
+            return pokemons;
+        } catch (Exception e) {
+            return null;
         }
-        return pokemons;
+
     }
 
     public Pokemon(double value, int type, GeoLocation location) {
@@ -58,13 +65,32 @@ public class Pokemon {
         Iterator<EdgeData> it = graph.edgeIter();
         while (it.hasNext()) {
             EdgeData ed = it.next();
-            if (isOnTheLine(graph.getNode(ed.getSrc()).getLocation(), graph.getNode(ed.getDest()).getLocation())) {
-                this.edge = ed;
-                return;
+            int src = ed.getSrc();
+            int dest = ed.getDest();
+            if (isOnTheLine(graph.getNode(src).getLocation(), graph.getNode(dest).getLocation())) {
+                if (type > 0 && dest - src > 0) {
+                    this.edge = ed;
+                    return;
+                } else if (type < 0 && dest - src <= 0) {
+                    this.edge = ed;
+                    return;
+                }
             }
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pokemon pokemon = (Pokemon) o;
+        return value == pokemon.value && type == pokemon.type && location.equals(pokemon.location) && Objects.equals(edge, pokemon.edge);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, type, location, edge);
+    }
 
     public double getValue() {
         return value;

@@ -4,6 +4,8 @@ import assignemt4.api.EdgeData;
 import assignemt4.api.GeoLocation;
 import assignemt4.json_models.EdgeDataJson;
 
+import java.util.Objects;
+
 public class EdgeDataImpl implements EdgeData {
 
     private int src;
@@ -36,6 +38,18 @@ public class EdgeDataImpl implements EdgeData {
         this.info = e.getInfo();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EdgeDataImpl edgeData = (EdgeDataImpl) o;
+        return src == edgeData.src && dest == edgeData.dest && Double.compare(edgeData.weight, weight) == 0 && tag == edgeData.tag && Objects.equals(info, edgeData.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(src, dest, weight, info, tag);
+    }
 
     @Override
     public int getSrc() {

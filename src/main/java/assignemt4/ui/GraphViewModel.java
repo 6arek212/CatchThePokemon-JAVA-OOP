@@ -39,6 +39,7 @@ public class GraphViewModel {
     private ExecutorService pool;
     private Client client;
     private HashMap<Integer, AgentDs> agentsDs;
+    private AgentsBrain brain;
 
     public GraphViewModel(DirectedWeightedGraphAlgorithms graphAlg, ActionListener actionListener, Client client) {
         this.actionListener = actionListener;
@@ -50,7 +51,7 @@ public class GraphViewModel {
         for (Agent agent : agents.values()) {
             this.agentsDs.put(agent.getId(), new AgentDs(agent, algo));
         }
-
+        this.brain = new AgentsBrain(algo, pokemons, client, actionListener);
 
         client.start();
     }
@@ -87,18 +88,32 @@ public class GraphViewModel {
 
 
     public void spin() {
-        allocatePokemons();
+        //allocatePokemons();
+        updatePokemons();
         updateAgents();
         moveAgents();
+        actionListener.actionEvent(new UIEvents.UpdateUi());
     }
 
     private void updateAgents() {
         HashMap<Integer, Agent> newAgents = Agent.load(client.getAgents());
         for (Agent agent : newAgents.values()) {
             this.agents.get(agent.getId()).setLocation(agent.getLocation());
+            this.agents.get(agent.getId()).setDest(agent.getDest());
+            this.agents.get(agent.getId()).setSrc(agent.getSrc());
         }
     }
 
+    private void updatePokemons() {
+        List<Pokemon> ps = Pokemon.load(client.getPokemons());
+        if (ps == null)
+            return;
+        this.pokemons = ps;
+        for (Pokemon p : pokemons) {
+            p.setEdge(this.algo.getGraph());
+        }
+        this.brain.setPokemons(pokemons);
+    }
 
     private void allocatePokemons() {
 
@@ -113,10 +128,13 @@ public class GraphViewModel {
     private void moveAgents() {
         for (Agent agent : agents.values()) {
             if (agent.getDest() == -1) {
-                //agent.setDest(agentsDs.get(agent.getId()).getNext().getKey());
+                int next = brain.getNext(agent);
+                if (next != -1) {
+                    agent.setDest(next);
+                    client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
+                }
             }
         }
-        this.client.move();
     }
 
     public DirectedWeightedGraphAlgorithms getAlgo() {
