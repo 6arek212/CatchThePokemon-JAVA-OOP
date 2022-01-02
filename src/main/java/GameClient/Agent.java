@@ -199,26 +199,4 @@ public class Agent {
     }
 
 
-    public void computeTime(long dtt, List<Pokemon> poks) {
-        double ddt = dtt;
-        if (this.currEdge != null) {
-            double weight = currEdge.getWeight();
-            GeoLocation dest = g.getNode(currEdge.getDest()).getLocation();
-            GeoLocation src = g.getNode(currEdge.getSrc()).getLocation();
-            double de = src.distance(dest);
-            double dist = pos.distance(dest);
-            Pokemon p = poks.get(this.currPok);
-            if (p.getEdge().getSrc() == currEdge.getSrc() && p.getEdge().getDest() == currEdge.getDest()) {
-
-                dist = this.pos.distance(p.getPos());
-            }
-
-
-            double n = dist / de;
-            double dt = weight * n / this.getSpeed();
-            ddt = (1000.0 * dt);
-
-        }
-        this.setTime(ddt);
-    }
 }
