@@ -11,14 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GameFrame extends JFrame {
-//    DirectedWeightedGraphAlgorithms g;
     protected JRadioButton[] buttons;
     public GamePanel gamePanel;
-    private GameWorld gameWorld;
     private JMenuBar menuBar;
-
     public GameFrame(GameWorld gameWorld) {
-//        gameWorld = new GameWorld();
+
 
         gamePanel = new GamePanel(gameWorld);
 
@@ -28,26 +25,21 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        setComponents();
+//        setComponents();
         this.setResizable(true);
         this.setLocationRelativeTo(null);
-
         this.setVisible(true);
 
     }
 
-    private void setComponents() {
-        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
-
-        this.menuBar = new JMenuBar();
-        menuBar.setMaximumSize(new Dimension(150, 40));
-
-
-        this.setJMenuBar(menuBar);
-
-
-    }
-
+//    private void setComponents() {
+//        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
+//        this.menuBar = new JMenuBar();
+//        menuBar.setMaximumSize(new Dimension(150, 40));
+//        this.setJMenuBar(menuBar);
+//
+//
+//    }
 
 
 }
