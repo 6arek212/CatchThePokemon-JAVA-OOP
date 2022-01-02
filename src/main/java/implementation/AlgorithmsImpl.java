@@ -26,8 +26,12 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
     private DirectedWeightedGraph reverseGraph;
 
 
-    public AlgorithmsImpl(DirectedWeightedGraph g) {
-        this.g = g;
+    //    public AlgorithmsImpl(DirectedWeightedGraph g) {
+//        this.g = g;
+//
+//    }
+    public AlgorithmsImpl() {
+
 
     }
 
@@ -380,27 +384,27 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
         return tempCost;
     }
 
-    public static void main(String[] args) {
-        DirectedWeightedGraph g = new DirectedWeightedGraphImpl();
-
-
-        AlgorithmsImpl ag = new AlgorithmsImpl(g);
-
-        ag.load("G2.json");
-        List<NodeData> citits = new ArrayList<>();
-//        for (Iterator<NodeData> it = ag.getGraph().nodeIter(); it.hasNext(); ) {
-//            NodeData n = it.next();
-//            citits.add(n);
+//    public static void main(String[] args) {
+//        DirectedWeightedGraph g = new DirectedWeightedGraphImpl();
 //
-//        }
-
-
-//        System.out.println("Cost 1: "+ ag.getRouteCost(ag.tsp(citits)) + "->" + ag.tsp(citits));
-
-
-//        new GraphFrame(ag);
-
-    }
+//
+//        AlgorithmsImpl ag = new AlgorithmsImpl(g);
+//
+//        ag.load("G2.json");
+//        List<NodeData> citits = new ArrayList<>();
+////        for (Iterator<NodeData> it = ag.getGraph().nodeIter(); it.hasNext(); ) {
+////            NodeData n = it.next();
+////            citits.add(n);
+////
+////        }
+//
+//
+////        System.out.println("Cost 1: "+ ag.getRouteCost(ag.tsp(citits)) + "->" + ag.tsp(citits));
+//
+//
+////        new GraphFrame(ag);
+//
+//    }
 
 }
 

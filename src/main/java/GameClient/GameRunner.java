@@ -9,7 +9,6 @@ import api.NodeData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import implementation.AlgorithmsImpl;
-import implementation.jsonToGraphGame;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +22,6 @@ public class GameRunner implements Runnable {
 
 
     private static DirectedWeightedGraph g;
-    //    DirectedWeightedGraphAlgorithms aglo;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
     //priority Queue for shortest dis agent and pokemon using
@@ -45,13 +43,13 @@ public class GameRunner implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DirectedWeightedGraph.class, new jsonToGraphGame());
-        Gson gson = builder.create();
-        g = gson.fromJson(game.getGraph(), DirectedWeightedGraph.class);
-        initGame(game);
-        DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl(g);
+        gameWorld = new GameWorld();
+        g = gameWorld.fromJsonToGraph(game.getGraph());
+        DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl();
         ga.init(g);//now we can do algo on the game  graph
+        initGame(game);
+
+
         game.addAgent("{\"id\":0}");
         game.addAgent("{\"id\":1}");
 
@@ -83,7 +81,7 @@ public class GameRunner implements Runnable {
 
         var agents = gameWorld.getAgents(game.getAgents(), g);
         var pokemons = gameWorld.json2Pokemons(game.getPokemons());
-        DirectedWeightedGraphAlgorithms Aglo = new AlgorithmsImpl(g);
+        DirectedWeightedGraphAlgorithms Aglo = new AlgorithmsImpl();
         gameWorld.setAgents(agents);
         gameWorld.setPokemons(pokemons);
         gameWorld.setGraph(g);
@@ -174,7 +172,8 @@ public class GameRunner implements Runnable {
         gameWorld.updatePokemonsEdges(pokemons);
 
         double dist, srcToDestPokEdge, locToSrcAgent;
-        DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl(g);
+        DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl();
+        algo.init(g);
         for (int i = 0; i < pokemons.size(); i++) {
             Pokemon pokemon = pokemons.get(i);
             System.out.println(pokemon);
@@ -214,7 +213,7 @@ public class GameRunner implements Runnable {
 
     private void initGame(Client game) {
         String pokz = game.getPokemons();
-        gameWorld = new GameWorld();
+//        gameWorld = new GameWorld();
         gameWorld.setGraph(g);
         gameWorld.setPokemons(GameWorld.json2Pokemons(pokz));
         gameWorld.setAgents(GameWorld.getAgents(game.getAgents(), g));
