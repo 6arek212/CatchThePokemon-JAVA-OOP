@@ -32,25 +32,28 @@ public class AgentsBrain {
     }
 
 
-    private void handlePokemon(Agent agent, Pokemon pokemon) {
-        new Thread(
+    private void handlePokemon(Agent agent) {
+        executor.execute(
                 () -> {
-                    NodeData nextNode = this.algo.getGraph().getNode(pokemon.getEdge().getDest());
+                    if (agent.getCurrentPok() == null)
+                        return;
+                    NodeData nextNode = this.algo.getGraph().getNode(agent.getCurrentPok().getEdge().getDest());
                     double dist = agent.getLocation().distance(nextNode.getLocation());
-                    List<Pokemon> ps = pokemons.stream().filter((Pokemon p) -> p.equals(pokemon)).collect(Collectors.toList());
+                    List<Pokemon> ps = pokemons.stream().filter((Pokemon p) -> p.equals(agent.getCurrentPok())).collect(Collectors.toList());
 
                     while (!ps.isEmpty()) {
-                        double time = pokemon.getEdge().getWeight() * agent.getLocation().distance(pokemon.getLocation()) / dist;
+                        double time = agent.getCurrentPok().getEdge().getWeight() * agent.getLocation().distance(agent.getCurrentPok().getLocation()) / dist;
                         try {
                             Thread.sleep((int) (time * 1000 + EPS));
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         client.move();
-                        ps = pokemons.stream().filter((Pokemon p) -> p.equals(pokemon)).collect(Collectors.toList());
+                        ps = pokemons.stream().filter((Pokemon p) -> p.equals(agent.getCurrentPok())).collect(Collectors.toList());
                     }
 
-                    double time = pokemon.getEdge().getWeight() * agent.getLocation().distance(nextNode.getLocation()) / dist;
+
+                    double time = agent.getCurrentPok().getEdge().getWeight() * agent.getLocation().distance(nextNode.getLocation()) / dist;
 
                     try {
                         Thread.sleep((int) (time * 1000 + EPS));
@@ -58,15 +61,16 @@ public class AgentsBrain {
                         e.printStackTrace();
                     }
                     client.move();
-                    System.out.println("Eat that Pokimon " + pokemons + "  " + pokemon);
+                    System.out.println("Eat that Pokimon " + pokemons + "  " + agent.getCurrentPok());
+                    agent.setCurrentPok(null);
                 }
-        ).start();
+        );
     }
 
 
     private void moveAfter(Agent agent, double w) {
-        new Thread(
-                ()->{
+        executor.execute(
+                () -> {
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
@@ -77,7 +81,7 @@ public class AgentsBrain {
                         }
                     }, (long) (w * 1000 + EPS));
                 }
-        ).start();
+        );
     }
 
 
@@ -102,27 +106,19 @@ public class AgentsBrain {
             return -1;
 
         List<NodeData> path;
-        boolean flag = false;
+        if (agent.getCurrentPok() != null && agent.getCurrentPok().getEdge().getSrc() == agent.getSrc()) {
+//            handlePokemon(agent);
+            return agent.getCurrentPok().getEdge().getDest();
+        }
 
         Pokemon pokemon = getClosestPockemon(agent);
         agent.setCurrentPok(pokemon);
-
-        if (agent.getSrc() != pokemon.getEdge().getSrc())
-            path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
-        else {
-            path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getDest());
-            flag = true;
-        }
-
+        path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
         if (path.isEmpty() || path.size() == 1)
             return -1;
 
         double w = algo.getGraph().getEdge(agent.getSrc(), path.get(1).getKey()).getWeight();
-
-        if (flag)
-            moveAfter(agent, w);
-        else
-            handlePokemon(agent,pokemon);
+//        moveAfter(agent, w);
 
         return path.get(1).getKey();
     }

@@ -61,7 +61,6 @@ public class Game {
 
 
     private void moveAgents() {
-        client.move();
         for (Agent agent : agents.values()) {
             if (agent.getDest() == -1) {
                 System.out.println(agents);
@@ -69,19 +68,11 @@ public class Game {
                 client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
             }
         }
+        client.move();
     }
 
 
-    private double timeToGetToPokemon() {
-        double min = Double.MAX_VALUE;
 
-        for (Agent agent : agents.values()) {
-
-
-        }
-
-        return min;
-    }
 
     private void updateAgents() {
         HashMap<Integer, Agent> newAgents = Agent.load(client.getAgents());
