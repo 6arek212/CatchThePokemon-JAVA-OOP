@@ -26,8 +26,6 @@ public class GameRunner implements Runnable {
     //    DirectedWeightedGraphAlgorithms aglo;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
-    //    private static Client game;
-    private static PriorityQueue<double[]> sp = new PriorityQueue<>(Comparator.comparingDouble(o -> (o[2])));
     //priority Queue for shortest dis agent and pokemon using
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
     private static double ms = 100;
@@ -65,25 +63,18 @@ public class GameRunner implements Runnable {
         game.start();
 
         int dtt;
-        int ind = 0;
+//        int ind = 0;
 
         while (game.isRunning().equals("true")) {
             moveAgents(game);
+            gameFrame.repaint();
             dtt = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
             try {
-                if (ind % 1 == 0) {
-
-                    gameFrame.repaint();
-
-                }
                 Thread.sleep(dtt);
-                ind++;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
         }
 //        game.stop();
     }
@@ -182,7 +173,7 @@ public class GameRunner implements Runnable {
     }
 
     //compute distance between each agent and pok [pok , agent , dist]
-    // to take give the best agent to a pok
+    // to give the best agent to a pok
     public void computeDistance(List<Pokemon> pokemons, List<Agent> agents, DirectedWeightedGraph g) {
         gameWorld.updatePokemonsEdges(pokemons);
 
@@ -236,18 +227,11 @@ public class GameRunner implements Runnable {
         JSONObject line;
         try {
             line = new JSONObject(info);
-            JSONObject ttt = line.getJSONObject("GameServer");
-            int agentsSize = ttt.getInt("agents");
-            ArrayList<Pokemon> cl_fs = GameWorld.json2Pokemons(game.getPokemons());
-            cl_fs.sort(Comparator.comparingInt(o -> (int) o.getValue()));
-            gameWorld.updatePokemonsEdges(cl_fs);
-
-//            for (int i = 0; i < agentsSize; i++) {
-//                Pokemon c = cl_fs.get(i);
-//                int sn = c.getEdge().getSrc();
-//                game.addAgent("{\"id\":" + i + "}");
-////                game.addAgent("{\"id\":1}");
-//            }
+            JSONObject GameServerJs = line.getJSONObject("GameServer");
+            int agentsSize = GameServerJs.getInt("agents");
+            ArrayList<Pokemon> p = GameWorld.json2Pokemons(game.getPokemons());
+            p.sort(Comparator.comparingInt(o -> (int) o.getValue()));
+            gameWorld.updatePokemonsEdges(p);
 
         } catch (JSONException e) {
             e.printStackTrace();

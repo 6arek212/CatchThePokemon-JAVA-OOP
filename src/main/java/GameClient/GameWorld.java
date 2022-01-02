@@ -17,7 +17,7 @@ import java.util.*;
 public class GameWorld {
     public static final double EPS1 = 0.001, EPS2 = EPS1 * EPS1;
     private DirectedWeightedGraph g;
-    private List<Agent> agents; //
+    private List<Agent> agents;
     private List<Pokemon> pokemons;
     private List<String> info;
 
@@ -28,12 +28,12 @@ public class GameWorld {
     }
 
 
-    public void setPokemons(List<Pokemon> f) {
-        this.pokemons = f;
+    public void setPokemons(List<Pokemon> pokemons) {
+        this.pokemons = pokemons;
     }
 
-    public void setAgents(List<Agent> f) {
-        this.agents = f;
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
     }
 
     public void setGraph(DirectedWeightedGraph g) {

@@ -158,11 +158,14 @@ public class GamePanel extends JPanel {
                 drawEdge(e, g);
             }
             GeoLocation c = ag.getPos();
+            Pokemon pokemon = gameWorld.getPokemons().get(ag.getCurrPok());
             int r = (int) (0.03 * this.getHeight());
             if (c != null) {
                 GeoLocation fp = WorldToFrame.worldToframe((Point) c);
-                g.drawImage(image2, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
-                g.drawString("" + ag.getId(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
+
+                    g.drawImage(image2, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
+                    g.drawString("" + ag.getId(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
+
             }
         }
     }
