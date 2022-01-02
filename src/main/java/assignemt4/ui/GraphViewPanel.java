@@ -59,7 +59,6 @@ public class GraphViewPanel extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         updateFrame();
-        controller.spin();
         printGraph(g);
         drawPokemons(g);
         drawAgents(g);

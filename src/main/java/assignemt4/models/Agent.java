@@ -17,6 +17,7 @@ public class Agent {
     private int dest;
     private int speed;
     private GeoLocation location;
+    private Pokemon currentPok;
 
     public Agent(AgentJson.AgentJsonInner agentJson) {
         this.id = agentJson.id;
@@ -47,7 +48,13 @@ public class Agent {
         return agents;
     }
 
+    public void setCurrentPok(Pokemon currentPok) {
+        this.currentPok = currentPok;
+    }
 
+    public Pokemon getCurrentPok() {
+        return currentPok;
+    }
 
     public int getId() {
         return id;
