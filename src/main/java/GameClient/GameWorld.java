@@ -124,7 +124,7 @@ public class GameWorld {
 
     }
 
-
+     //check if pokemon on edge with using distance equation
     private static boolean CheckOnEdge(GeoLocation p, EdgeData e, int type, DirectedWeightedGraph g) {
         int src = g.getNode(e.getSrc()).getKey();
         int dest = g.getNode(e.getDest()).getKey();
@@ -136,13 +136,13 @@ public class GameWorld {
         }
         GeoLocation srcPos = g.getNode(src).getLocation();
         GeoLocation destPos = g.getNode(dest).getLocation();
-        boolean ans = false;
+
         double dist = srcPos.distance(destPos);
         double d1 = srcPos.distance(p) + p.distance(destPos);
         if (dist > d1 - EPS2) {
-            ans = true;
+            return true;
         }
-        return ans;
+        return false;
 
     }
 

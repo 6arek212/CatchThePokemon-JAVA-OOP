@@ -45,25 +45,21 @@ public class GameRunner implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        game.login(id);
-
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DirectedWeightedGraph.class, new jsonToGraphGame());
         Gson gson = builder.create();
         g = gson.fromJson(game.getGraph(), DirectedWeightedGraph.class);
         initGame(game);
         DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl(g);
-//        gameFrame = new GameFrame(gameWorld);
         ga.init(g);//now we can do algo on the game  graph
         game.addAgent("{\"id\":0}");
         game.addAgent("{\"id\":1}");
-//        game.addAgent("{\"id\":2}");
-//        game.startGame();
+
 
         game.start();
 
         int dtt;
-//        int ind = 0;
+//
 
         while (game.isRunning().equals("true")) {
             moveAgents(game);
