@@ -6,11 +6,15 @@ import GameClient.utils.Range2D;
 import GameClient.utils.Range2Range;
 import api.*;
 import GameClient.utils.Point;
+import implementation.AlgorithmsImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -124,7 +128,29 @@ public class GameWorld {
 
     }
 
-     //check if pokemon on edge with using distance equation
+    // load the json file
+    public DirectedWeightedGraph fromJsonToGraph(String json) {
+        DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl();
+        fromJsonStringToFile(json);
+        algo.load("A.json");
+        return algo.getGraph();
+    }
+
+   // make json string(the server give to us) into json file
+    private void fromJsonStringToFile(String json) {
+        try {
+            String str = (new JSONObject(json)).toString(4);
+            File file = new File("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\data\\A.json");
+            FileWriter myWriter = new FileWriter(file);
+            myWriter.write(str);
+            myWriter.close();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //check if pokemon on edge with using distance equation
     private static boolean CheckOnEdge(GeoLocation p, EdgeData e, int type, DirectedWeightedGraph g) {
         int src = g.getNode(e.getSrc()).getKey();
         int dest = g.getNode(e.getDest()).getKey();

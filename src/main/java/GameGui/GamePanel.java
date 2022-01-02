@@ -96,6 +96,7 @@ public class GamePanel extends JPanel {
         g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {
             EdgeData edgeData = it.next();
+            g.setColor(Color.BLACK);
             drawEdge(edgeData, g);
 
         }
@@ -123,7 +124,7 @@ public class GamePanel extends JPanel {
         GeoLocation d0 = this.WorldToFrame.worldToframe((Point) d);
         Line2D line = new Line2D.Double((int) s0.x(), (int) s0.y(), (int) d0.x(), (int) d0.y());
         g2d.setStroke(new BasicStroke(5));
-        g2d.setColor(Color.BLACK);
+//        g2d.setColor(Color.BLACK);
         g2d.fill(line);
         g2d.draw(line);
 
