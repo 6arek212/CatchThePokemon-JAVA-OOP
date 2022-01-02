@@ -20,7 +20,7 @@ public class Pokemon {
     @SerializedName("pos")
     private GeoLocation location;
     private EdgeData edge;
-    private boolean isCaptured;
+    private boolean isAssigned;
 
     public Pokemon(PokemonJson.PokemonJsonInner pokemonJsonInner) {
         this.value = pokemonJsonInner.value;
@@ -85,6 +85,15 @@ public class Pokemon {
         if (o == null || getClass() != o.getClass()) return false;
         Pokemon pokemon = (Pokemon) o;
         return value == pokemon.value && type == pokemon.type && location.equals(pokemon.location) && Objects.equals(edge, pokemon.edge);
+    }
+
+
+    public boolean isAssigned() {
+        return isAssigned;
+    }
+
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
     }
 
     @Override

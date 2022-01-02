@@ -7,9 +7,8 @@ import assignemt4.ex4_java_client.Client;
 import assignemt4.models.Agent;
 import assignemt4.models.Pokemon;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 
 public class Game {
@@ -36,11 +35,66 @@ public class Game {
                 updateAgents();
                 updatePokemons();
                 moveAgents();
+                double min = getMin();
+
+                int sleepTime ;
+                double x = isOnPokEdgePokemon();
+
+                if (isOnPokEdgePokemon() != Double.MAX_VALUE){
+                    sleepTime = (int ) Math.ceil(x *1000 + 0.001);
+                }else{
+                    sleepTime = (int ) Math.ceil(getMin() *1000 + 0.001);
+                }
+
+
+                System.out.println(sleepTime);
+
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                client.move();
                 actionListener.actionEvent(new UIEvents.UpdateUi());
             }
             brain.clearTasks();
             client.stop();
         }).start();
+    }
+
+    private double getMin() {
+        double min = Double.MAX_VALUE;
+        for (Agent agent : agents.values()) {
+            double w = algo.getGraph().getEdge(agent.getSrc() , agent.getCurrentPath().get(0).getKey()).getWeight();
+            if (agent.getCurrentPath() != null && w < min) {
+                min = w;
+            }
+        }
+        return min;
+    }
+
+
+    private double isOnPokEdgePokemon() {
+        for (Agent agent : agents.values()) {
+            if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getSrc()) {
+                NodeData nextNode = this.algo.getGraph().getNode(agent.getCurrentPok().getEdge().getDest());
+                double dist = agent.getLocation().distance(nextNode.getLocation());
+                double time = agent.getCurrentPok().getEdge().getWeight() * agent.getLocation().distance(agent.getCurrentPok().getLocation()) / dist;
+                return time;
+            }
+        }
+        return Double.MAX_VALUE;
+    }
+
+
+    private boolean isNearPokemon() {
+        for (Agent agent : agents.values()) {
+            if (agent.getCurrentPok() != null && agent.getLocation().distance(agent.getCurrentPok().getLocation()) <= 0.001) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -63,15 +117,12 @@ public class Game {
     private void moveAgents() {
         for (Agent agent : agents.values()) {
             if (agent.getDest() == -1) {
-                System.out.println(agents);
-                agent.setDest(brain.getNext(agent));
-                client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
+                brain.setNextDest(agent);
+                System.out.println(agent.getCurrentPath().get(0).getKey());
+                client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getCurrentPath().get(0).getKey() + "}");
             }
         }
-        client.move();
     }
-
-
 
 
     private void updateAgents() {

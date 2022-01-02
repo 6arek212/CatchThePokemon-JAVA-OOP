@@ -1,6 +1,7 @@
 package assignemt4.models;
 
 import assignemt4.api.GeoLocation;
+import assignemt4.api.NodeData;
 import assignemt4.impl.DirectedWeightedGraphImpl;
 import assignemt4.json_models.AgentJson;
 import assignemt4.json_models.DirectedWeightedGraphJson;
@@ -18,6 +19,7 @@ public class Agent {
     private int speed;
     private GeoLocation location;
     private Pokemon currentPok;
+    private List<NodeData> currentPath;
 
     public Agent(AgentJson.AgentJsonInner agentJson) {
         this.id = agentJson.id;
@@ -46,6 +48,14 @@ public class Agent {
             agents.put(agent.getId(), agent);
         }
         return agents;
+    }
+
+    public void setCurrentPath(List<NodeData> currentPath) {
+        this.currentPath = currentPath;
+    }
+
+    public List<NodeData> getCurrentPath() {
+        return currentPath;
     }
 
     public void setCurrentPok(Pokemon currentPok) {

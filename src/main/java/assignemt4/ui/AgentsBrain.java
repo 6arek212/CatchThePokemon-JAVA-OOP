@@ -32,59 +32,6 @@ public class AgentsBrain {
     }
 
 
-    private void handlePokemon(Agent agent) {
-        executor.execute(
-                () -> {
-                    if (agent.getCurrentPok() == null)
-                        return;
-                    NodeData nextNode = this.algo.getGraph().getNode(agent.getCurrentPok().getEdge().getDest());
-                    double dist = agent.getLocation().distance(nextNode.getLocation());
-                    List<Pokemon> ps = pokemons.stream().filter((Pokemon p) -> p.equals(agent.getCurrentPok())).collect(Collectors.toList());
-
-                    while (!ps.isEmpty()) {
-                        double time = agent.getCurrentPok().getEdge().getWeight() * agent.getLocation().distance(agent.getCurrentPok().getLocation()) / dist;
-                        try {
-                            Thread.sleep((int) (time * 1000 + EPS));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        client.move();
-                        ps = pokemons.stream().filter((Pokemon p) -> p.equals(agent.getCurrentPok())).collect(Collectors.toList());
-                    }
-
-
-                    double time = agent.getCurrentPok().getEdge().getWeight() * agent.getLocation().distance(nextNode.getLocation()) / dist;
-
-                    try {
-                        Thread.sleep((int) (time * 1000 + EPS));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    client.move();
-                    System.out.println("Eat that Pokimon " + pokemons + "  " + agent.getCurrentPok());
-                    agent.setCurrentPok(null);
-                }
-        );
-    }
-
-
-    private void moveAfter(Agent agent, double w) {
-        executor.execute(
-                () -> {
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            System.out.println(agent);
-                            client.move();
-                            actionListener.actionEvent(new UIEvents.UpdateUi());
-                            System.out.println("moved !");
-                        }
-                    }, (long) (w * 1000 + EPS));
-                }
-        );
-    }
-
-
     private Pokemon getClosestPockemon(Agent agent) {
         double min = Double.MAX_VALUE;
         Pokemon picked = null;
@@ -101,26 +48,27 @@ public class AgentsBrain {
     }
 
 
-    public int getNext(Agent agent) {
+    public void setNextDest(Agent agent) {
         if (pokemons.isEmpty())
-            return -1;
-
-        List<NodeData> path;
-        if (agent.getCurrentPok() != null && agent.getCurrentPok().getEdge().getSrc() == agent.getSrc()) {
-//            handlePokemon(agent);
-            return agent.getCurrentPok().getEdge().getDest();
+            return;
+        if (agent.getCurrentPok() != null && !agent.getCurrentPath().isEmpty() && agent.getSrc() == agent.getCurrentPath().get(0).getKey()) {
+            agent.getCurrentPath().remove(0);
         }
 
-        Pokemon pokemon = getClosestPockemon(agent);
-        agent.setCurrentPok(pokemon);
-        path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
-        if (path.isEmpty() || path.size() == 1)
-            return -1;
+        if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getDest()) {
+            agent.setCurrentPath(null);
+            agent.setCurrentPok(null);
+        }
 
-        double w = algo.getGraph().getEdge(agent.getSrc(), path.get(1).getKey()).getWeight();
-//        moveAfter(agent, w);
-
-        return path.get(1).getKey();
+        if (agent.getCurrentPok() == null) {
+            Pokemon pokemon = getClosestPockemon(agent);
+            agent.setCurrentPok(pokemon);
+            List<NodeData> path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
+            path.add(algo.getGraph().getNode(pokemon.getEdge().getDest()));
+            path.remove(0);
+            agent.setCurrentPath(path);
+            pokemon.setAssigned(true);
+        }
     }
 
 
@@ -128,7 +76,7 @@ public class AgentsBrain {
         this.executor.shutdownNow();
     }
 
-    public synchronized void setPokemons(List<Pokemon> pokemons) {
+    public void setPokemons(List<Pokemon> pokemons) {
         this.pokemons = pokemons;
     }
 }
