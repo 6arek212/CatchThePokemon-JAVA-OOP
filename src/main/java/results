@@ -14,7 +14,7 @@ Case 3:
 
 
 Case 4:
-{"GameServer":{"pokemons":5,"is_logged_in":false,"moves":47,"grade":121,"game_level":4,"max_user_level":-1,"id":0,"graph":"data/A1","agents":1}}
+{"GameServer":{"pokemons":5,"is_logged_in":false,"moves":71,"grade":253,"game_level":4,"max_user_level":-1,"id":0,"graph":"data/A1","agents":1}}
 
 
 Case 5:
