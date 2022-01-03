@@ -27,7 +27,7 @@ public class GameRunner implements Runnable {
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
     private static double ms = 100;
     private static int agentSize;
-
+    public static Client game;
     public static void main(String[] args) {
         Thread GameRun = new Thread(new GameRunner());
         GameRun.start();
@@ -37,7 +37,7 @@ public class GameRunner implements Runnable {
 
     @Override
     public void run() {
-        Client game = new Client();
+        game = new Client();
         try {
             game.startConnection("127.0.0.1", 6666);
         } catch (IOException e) {
@@ -46,13 +46,15 @@ public class GameRunner implements Runnable {
         gameWorld = new GameWorld();
         g = gameWorld.fromJsonToGraph(game.getGraph());
         DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl();
-        ga.init(g);//now we can do algo on the game  graph
+        ga.init(g);
         initGame(game);
         game.addAgent("{\"id\":0}");
         game.start();
         while (game.isRunning().equals("true")) {
             moveAgents(game);
             gameFrame.repaint();
+            gameWorld.setTimeToend((int) (Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
+            gameWorld.setInfo(game.getInfo());
 //            if (agentSize > 1) {
 //                ms = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
 //            }
@@ -231,14 +233,11 @@ public class GameRunner implements Runnable {
         gameWorld.setGraph(g);
         gameWorld.setPokemons(GameWorld.fromJsonStringToPoks(pokz));
         String info = game.getInfo();
-        gameWorld.setInfo(info);
         gameFrame = new GameFrame(gameWorld);
-        System.out.println(gameWorld.getAgents());
-
         gameFrame.repaint();
-        JSONObject infoObject;
         try {
-            infoObject = new JSONObject(info);
+            JSONObject  infoObject = new JSONObject(info);
+
             JSONObject GameServer = infoObject.getJSONObject("GameServer");
             agentSize = GameServer.getInt("agents");
 

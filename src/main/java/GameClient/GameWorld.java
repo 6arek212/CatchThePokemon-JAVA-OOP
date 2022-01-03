@@ -19,11 +19,12 @@ import java.util.*;
 
 
 public class GameWorld {
-    public static final double  EPS1 = 0.001 * 0.001;
+    public static final double EPS1 = 0.001 * 0.001;
     private DirectedWeightedGraph g;
     private List<Agent> agents;
     private List<Pokemon> pokemons;
     private String info;
+    private long timeToend;
 
 
     public GameWorld() {
@@ -31,6 +32,13 @@ public class GameWorld {
         info = "";
     }
 
+    public void setTimeToend(long timeToend) {
+        this.timeToend = timeToend;
+    }
+
+    public long getTimeToend() {
+        return this.timeToend;
+    }
 
     public void setPokemons(List<Pokemon> pokemons) {
         this.pokemons = pokemons;

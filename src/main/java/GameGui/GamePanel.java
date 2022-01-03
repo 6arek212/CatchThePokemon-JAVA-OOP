@@ -1,9 +1,6 @@
 package GameGui;
 
-import GameClient.Agent;
-import GameClient.Client;
-import GameClient.GameWorld;
-import GameClient.Pokemon;
+import GameClient.*;
 import GameClient.utils.Range;
 import GameClient.utils.Range2D;
 import GameClient.utils.Range2Range;
@@ -40,10 +37,10 @@ public class GamePanel extends JPanel {
     private static boolean isEnabled;
     private final int NODE_SIZE = 10; // need to be even
     private final int ARROW_SIZE = NODE_SIZE - 2;
-    private final JCheckBox show_pokemons_values = new JCheckBox("pokemons values");
     private Image image, image2, image3, BackRoundImage;
-    int time, duration = -1, grade, moves, level;
+    private int time, duration = -1, grade, moves, level;
     private Client game;
+
 
     private JLabel InfoLabel = new JLabel();
 
@@ -53,19 +50,12 @@ public class GamePanel extends JPanel {
         graph = gameWorld.getGraph();
         this.setPreferredSize(new Dimension(700, 700));
         this.setFocusable(true);
-
         this.add(InfoLabel);
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\ball.gif"))).getImage();
         image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\nezu.gif"))).getImage();
         image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\pika.png"))).getImage();
 
 
-    }
-
-    public void update(GameWorld ar) {
-
-        this.gameWorld = ar;
-        updateFrame();
     }
 
     private void updateFrame() {
@@ -79,19 +69,17 @@ public class GamePanel extends JPanel {
     private void drawPokemons(Graphics2D g) {
         List<Pokemon> pokemons = gameWorld.getPokemons();
         if (pokemons != null) {
-            for (Pokemon f : pokemons) {
-                int val = (int) f.getValue();
-                Point c = f.getPos();
+            for (Pokemon pokemon : pokemons) {
+                int val = (int) pokemon.getValue();
+                Point point = pokemon.getPos();
                 int r = (int) (0.04 * this.getHeight());
                 g.setColor(Color.RED);
                 g.setFont(new Font("Arial", Font.BOLD, 16));
                 BufferedImage sourceImage = null;
-                if (c != null) {
-                    GeoLocation fp = WorldToFrame.worldToframe(c);
+                if (point != null) {
+                    GeoLocation fp = WorldToFrame.worldToframe(point);
 
                     g.drawImage(image, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
-                    if (show_pokemons_values.isSelected())
-                        g.drawString("" + val, (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
                 }
             }
         }
@@ -106,8 +94,6 @@ public class GamePanel extends JPanel {
 
 
         BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\back.jpg"))).getImage();
-        fetchData();
-        InfoLabel.setText("Level: " + level + " Timer: " + time + "/" + duration + " Grade: " + grade + " Moves: " + moves + "/" + duration * 10 + "     Display:");
         updateFrame();
         g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {
@@ -123,27 +109,29 @@ public class GamePanel extends JPanel {
 
 
         }
-
-
-//        this.repaint();
+        gameData();
+        InfoLabel.setText("Level: " + level + "   Timer: " + time + "/" + duration + "   Grade: " + grade + "     Moves: " + moves + "/" + duration * 10 + "");
         drawAgents(g2d);
         drawPokemons(g2d);
 
 
     }
 
-    private void fetchData() {
+    private void gameData() {
+        JSONObject infoObject;
         try {
-            JSONObject line = new JSONObject(gameWorld.get_info());
-            JSONObject ttt = line.getJSONObject("GameServer");
+            infoObject = new JSONObject(gameWorld.get_info());
+            JSONObject ttt = infoObject.getJSONObject("GameServer");
             grade = (int) ttt.getDouble("grade");
             moves = (int) ttt.getDouble("moves");
             level = ttt.getInt("game_level");
-//            time = (int) (Integer.parseInt(game.timeToEnd()) / 1000);
+            time = (int) gameWorld.getTimeToend();
             if (duration == -1)
                 duration = time + 1;
-        } catch (JSONException e) {
+
+        } catch (JSONException | NumberFormatException e) {
             e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -155,11 +143,9 @@ public class GamePanel extends JPanel {
         GeoLocation d0 = this.WorldToFrame.worldToframe((Point) d);
         Line2D line = new Line2D.Double((int) s0.x(), (int) s0.y(), (int) d0.x(), (int) d0.y());
         g2d.setStroke(new BasicStroke(5));
-//        g2d.setColor(Color.BLACK);
         g2d.fill(line);
         g2d.draw(line);
 
-//        g.fillRect(((int) (s0.x() + 7 * d0.x()) / 8 - ARROW_SIZE / 2), (int) ((s0.y() + 7 * d0.y()) / 8 - ARROW_SIZE / 2), ARROW_SIZE, ARROW_SIZE);
 
         if (e.getWeight() != 0) {
             g2d.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -199,15 +185,10 @@ public class GamePanel extends JPanel {
 
     private void drawNode(NodeDataImpl n, int r, Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-
         GeoLocation pos = n.getLocation();
         GeoLocation fp = this.WorldToFrame.worldToframe((Point) pos);
-
         Shape node = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
         g.drawImage(image3, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
-//        g2d.setColor(n.getNodeState());
-//        n.setVisualNode(node);
-//        g2d.fill(node);
         g.setFont(new Font("David", Font.PLAIN, 15));
         g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() - 4 * r);
 
