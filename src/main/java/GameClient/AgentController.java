@@ -19,7 +19,7 @@ public class AgentController {
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
-    private static double ms = 100;
+    public static double ms = 100;
     private static int agentSize;
     public static Client game;
     public static long id = -1;
@@ -30,6 +30,7 @@ public class AgentController {
         this.graph = graph;
 
     }
+
 
 
     public void moveAgents(Client game) {
@@ -129,6 +130,7 @@ public class AgentController {
 
             }
             ms = timeAv;
+
         }
     }
 

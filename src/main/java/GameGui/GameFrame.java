@@ -23,26 +23,18 @@ public class GameFrame extends JFrame {
         gamePanel = new GamePanel(gameWorld);
 
         this.add(gamePanel);
-        this.setTitle("Graph");
+        Image imageIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
+        this.setTitle("Pokemon Game");
+        this.setIconImage(imageIcon);
         this.setSize(1000, 700);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-//        setComponents();
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
     }
-
-//    private void setComponents() {
-//        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
-//        this.menuBar = new JMenuBar();
-//        menuBar.setMaximumSize(new Dimension(150, 40));
-//        this.setJMenuBar(menuBar);
-//
-//
-//    }
 
 
 }

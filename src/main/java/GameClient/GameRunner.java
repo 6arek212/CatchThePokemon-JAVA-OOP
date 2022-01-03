@@ -17,10 +17,10 @@ public class GameRunner implements Runnable {
     private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
-    private static double ms = 100;
+//    private static double ms = 100;
     private static int agentSize;
     public static Client game;
-    public static long id = -1;
+    private long id;
 
     public static void main(String[] args) {
         GameRunner start;
@@ -39,7 +39,7 @@ public class GameRunner implements Runnable {
     }
 
     public GameRunner(long id) {
-        GameRunner.id = id;
+        this.id = id;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class GameRunner implements Runnable {
             gameWorld.setTimeToend((Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
             gameWorld.setInfo(game.getInfo());
             try {
-                Thread.sleep((long) ms);
+                Thread.sleep((long)AgentController.ms);
             } catch (Exception e) {
                 e.printStackTrace();
             }
