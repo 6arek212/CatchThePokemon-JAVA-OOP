@@ -1,12 +1,10 @@
-package GameClient;
-
-//package ex4_java_client; /**
-// * @author AchiyaZigi
-// * @since 0.0
-// * @version 1.0
-// * OOP Ex4 - Do NOT change this class! as it is the server "api"
-// *
-// */
+package GameClient; /**
+ * @author AchiyaZigi
+ * @since 0.0
+ * @version 1.0
+ * OOP Ex4 - Do NOT change this class! as it is the server "api"
+ *
+ */
 import java.io.*;
 import java.net.*;
 
