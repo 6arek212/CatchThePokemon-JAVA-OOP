@@ -7,8 +7,7 @@ import api.DirectedWeightedGraphAlgorithms;
 import api.GeoLocation;
 import api.NodeData;
 import implementation.AlgorithmsImpl;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import java.util.*;
 /**
  * This class represent an overall algorithm for the game

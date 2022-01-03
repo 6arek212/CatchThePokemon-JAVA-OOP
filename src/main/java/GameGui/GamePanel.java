@@ -6,49 +6,32 @@ import GameClient.utils.Range2D;
 import GameClient.utils.Range2Range;
 import GameClient.utils.Point;
 import api.*;
-import implementation.AlgorithmsImpl;
-import implementation.EdgeDataImpl;
-
 import implementation.NodeDataImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 
 public class GamePanel extends JPanel {
     protected static DirectedWeightedGraph graph;
     private GameWorld gameWorld;
-
     private Range2Range WorldToFrame;
     private GameFrame frame;
-
-    private static boolean isEnabled;
-    private final int NODE_SIZE = 10; // need to be even
-    private final int ARROW_SIZE = NODE_SIZE - 2;
     private Image image, image2, image3, BackRoundImage;
     private int time, duration = -1, grade, moves, level;
     private Client game;
-
-
     private JLabel InfoLabel = new JLabel();
 
     GamePanel(GameWorld gameWorld) {
         this.game = game;
         this.gameWorld = gameWorld;
         graph = gameWorld.getGraph();
-        this.setPreferredSize(new Dimension(700, 700));
+        this.setPreferredSize(new Dimension(1000, 700));
         this.setFocusable(true);
         this.add(InfoLabel);
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\ball.gif"))).getImage();
@@ -93,7 +76,7 @@ public class GamePanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
 
 
-        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\back.jpg"))).getImage();
+        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\back2.jpg"))).getImage();
         updateFrame();
         g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {
