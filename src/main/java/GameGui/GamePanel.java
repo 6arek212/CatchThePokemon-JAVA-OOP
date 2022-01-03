@@ -120,7 +120,6 @@ public class GamePanel extends JPanel {
     private void gameData() {
         JSONObject infoObject;
         try {
-
             infoObject = new JSONObject(gameWorld.get_info());
             JSONObject ttt = infoObject.getJSONObject("GameServer");
             grade = (int) ttt.getDouble("grade");
