@@ -21,8 +21,7 @@ public class GraphViewFrame extends JFrame {
     public GraphViewFrame(Client client) {
         this.panel = new GraphViewPanel( client);
         panel.setBackground(Color.BLACK);
-        initLabels();
-
+        //initLabels();
         add(panel);
         initJframe();
     }

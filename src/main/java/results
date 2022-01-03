@@ -38,7 +38,7 @@ Case 9:
 
 
 Case 10:
-{"GameServer":{"pokemons":5,"is_logged_in":false,"moves":32,"grade":53,"game_level":10,"max_user_level":-1,"id":0,"graph":"data/A2","agents":1}}
+{"GameServer":{"pokemons":5,"is_logged_in":false,"moves":47,"grade":118,"game_level":10,"max_user_level":-1,"id":0,"graph":"data/A2","agents":1}}
 
 
 Case 11:

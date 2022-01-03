@@ -21,9 +21,6 @@ public class MyCode {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String graphStr = client.getGraph();
-        DirectedWeightedGraph graph = DirectedWeightedGraphImpl.load(graphStr);
         GraphViewFrame view = new GraphViewFrame(client);
     }
-
 }

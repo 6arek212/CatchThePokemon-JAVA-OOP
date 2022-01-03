@@ -12,6 +12,7 @@ import assignemt4.models.Pokemon;
 
 import javax.xml.crypto.Data;
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -26,6 +27,7 @@ public class Game {
     private AgentsBrain brain;
     private ActionListener actionListener;
     private Info info;
+    private int maxMoves;
 
     public Game(Client client, ActionListener actionListener) {
         this.client = client;
@@ -73,14 +75,16 @@ public class Game {
     }
 
     /**
-     *  starts the the game
+     * starts the  game
      */
     private void startGame() {
-        System.out.println("game starting ....... \n\n");
+        System.out.println("Game starting ....... ");
 
         client.start();
-        while (client.isRunning().equals("true")) {
-            this.info = Info.load(client.getInfo());
+        this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
+        System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
+
+        while (client.isRunning().equals("true") && info.getMoves() <= maxMoves) {
             updateAgents();
             updatePokemons();
             actionListener.actionEvent(new UIEvents.UpdateUi());
@@ -88,13 +92,23 @@ public class Game {
 
             long sleepTime;
             sleepTime = (long) (getProperWaitingTime() * 1000);
+
             waitAndMode(sleepTime);
+            this.info = Info.load(client.getInfo());
         }
         System.out.println(this.info);
+
+        client.stop();
+        try {
+            client.stopConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * wait and send a move to the server
+     *
      * @param time time to wait
      */
     private void waitAndMode(long time) {
