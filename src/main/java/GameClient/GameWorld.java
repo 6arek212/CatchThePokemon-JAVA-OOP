@@ -19,16 +19,16 @@ import java.util.*;
 
 
 public class GameWorld {
-    public static final double EPS1 = 0.001, EPS2 = EPS1 * EPS1;
+    public static final double  EPS1 = 0.001 * 0.001;
     private DirectedWeightedGraph g;
     private List<Agent> agents;
     private List<Pokemon> pokemons;
-    private List<String> info;
+    private String info;
 
 
     public GameWorld() {
 
-        info = new ArrayList<>();
+        info = "";
     }
 
 
@@ -56,8 +56,12 @@ public class GameWorld {
         return g;
     }
 
-    public List<String> get_info() {
+    public String get_info() {
         return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
 
@@ -65,10 +69,11 @@ public class GameWorld {
         ArrayList<Agent> agents = new ArrayList<Agent>();
         try {
             JSONObject jsonObject = new JSONObject(aa);
+            System.out.println(aa);
             JSONArray ags = jsonObject.getJSONArray("Agents");
             for (int i = 0; i < ags.length(); i++) {
                 Agent c = new Agent(gg, 0);
-                c.update(ags.get(i).toString());
+                c.updateAgent(ags.get(i).toString());
                 agents.add(c);
             }
 
@@ -79,7 +84,7 @@ public class GameWorld {
     }
 
 
-    public static ArrayList<Pokemon> json2Pokemons(String fs) {
+    public static ArrayList<Pokemon> fromJsonStringToPoks(String fs) {
         ArrayList<Pokemon> pokemons = new ArrayList<Pokemon>();
         try {
             JSONObject jsonObject = new JSONObject(fs);
@@ -128,6 +133,7 @@ public class GameWorld {
 
     }
 
+
     // load the json file
     public DirectedWeightedGraph fromJsonToGraph(String json) {
         DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl();
@@ -136,7 +142,7 @@ public class GameWorld {
         return algo.getGraph();
     }
 
-   // make json string(the server give to us) into json file
+    // make json string(the server give to us) into json file
     private void fromJsonStringToFile(String json) {
         try {
             String str = (new JSONObject(json)).toString(4);
@@ -162,10 +168,11 @@ public class GameWorld {
         }
         GeoLocation srcPos = g.getNode(src).getLocation();
         GeoLocation destPos = g.getNode(dest).getLocation();
-
+        //the dis of the edge
         double dist = srcPos.distance(destPos);
+        //from the edge src to p + from p to edge dest
         double d1 = srcPos.distance(p) + p.distance(destPos);
-        if (dist > d1 - EPS2) {
+        if (dist > d1 - EPS1) {
             return true;
         }
         return false;

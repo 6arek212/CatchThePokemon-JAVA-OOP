@@ -1,6 +1,7 @@
 package GameGui;
 
 import GameClient.Agent;
+import GameClient.Client;
 import GameClient.GameWorld;
 import GameClient.Pokemon;
 import GameClient.utils.Range;
@@ -12,6 +13,8 @@ import implementation.AlgorithmsImpl;
 import implementation.EdgeDataImpl;
 
 import implementation.NodeDataImpl;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -39,14 +42,19 @@ public class GamePanel extends JPanel {
     private final int ARROW_SIZE = NODE_SIZE - 2;
     private final JCheckBox show_pokemons_values = new JCheckBox("pokemons values");
     private Image image, image2, image3, BackRoundImage;
+    int time, duration = -1, grade, moves, level;
+    private Client game;
+
+    private JLabel InfoLabel = new JLabel();
 
     GamePanel(GameWorld gameWorld) {
+        this.game = game;
         this.gameWorld = gameWorld;
         graph = gameWorld.getGraph();
         this.setPreferredSize(new Dimension(700, 700));
         this.setFocusable(true);
 
-
+        this.add(InfoLabel);
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\ball.gif"))).getImage();
         image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\nezu.gif"))).getImage();
         image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\pika.png"))).getImage();
@@ -54,6 +62,11 @@ public class GamePanel extends JPanel {
 
     }
 
+    public void update(GameWorld ar) {
+
+        this.gameWorld = ar;
+        updateFrame();
+    }
 
     private void updateFrame() {
         Range rx = new Range(70, this.getWidth() - 70);
@@ -90,9 +103,12 @@ public class GamePanel extends JPanel {
 
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        updateFrame();
-        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\back.jpg"))).getImage();
 
+
+        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\GameGui\\back.jpg"))).getImage();
+        fetchData();
+        InfoLabel.setText("Level: " + level + " Timer: " + time + "/" + duration + " Grade: " + grade + " Moves: " + moves + "/" + duration * 10 + "     Display:");
+        updateFrame();
         g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {
             EdgeData edgeData = it.next();
@@ -116,6 +132,21 @@ public class GamePanel extends JPanel {
 
     }
 
+    private void fetchData() {
+        try {
+            JSONObject line = new JSONObject(gameWorld.get_info());
+            JSONObject ttt = line.getJSONObject("GameServer");
+            grade = (int) ttt.getDouble("grade");
+            moves = (int) ttt.getDouble("moves");
+            level = ttt.getInt("game_level");
+//            time = (int) (Integer.parseInt(game.timeToEnd()) / 1000);
+            if (duration == -1)
+                duration = time + 1;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void drawEdge(EdgeData e, Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         GeoLocation s = graph.getNode(e.getSrc()).getLocation();
@@ -137,7 +168,7 @@ public class GamePanel extends JPanel {
 
     }
 
-    private final Color[] _agents_colors = new Color[]{
+    private final Color[] colors = new Color[]{
             new Color(255, 0, 221),
             new Color(27, 255, 0),
             new Color(0, 255, 247),
@@ -151,21 +182,15 @@ public class GamePanel extends JPanel {
 
         g.setStroke(new BasicStroke(3));
         for (Agent ag : rs) {
-            g.setColor(_agents_colors[ag.getId()]);
-            List<NodeData> path = ag.getAgentCurrPath();
-            for (int i = 0; i < path.size() - 1; i++) {
-
-                EdgeData e = new EdgeDataImpl(path.get(i).getKey(), path.get(i + 1).getKey(), 0);
-                drawEdge(e, g);
-            }
+            g.setColor(colors[ag.getId()]);
             GeoLocation c = ag.getPos();
             Pokemon pokemon = gameWorld.getPokemons().get(ag.getCurrPok());
             int r = (int) (0.03 * this.getHeight());
             if (c != null) {
                 GeoLocation fp = WorldToFrame.worldToframe((Point) c);
 
-                    g.drawImage(image2, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
-                    g.drawString("" + ag.getId(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
+                g.drawImage(image2, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
+                g.drawString("" + ag.getId(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
 
             }
         }
