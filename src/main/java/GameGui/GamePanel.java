@@ -51,9 +51,9 @@ public class GamePanel extends JPanel {
         this.setPreferredSize(new Dimension(700, 700));
         this.setFocusable(true);
         this.add(InfoLabel);
-        image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\ball.gif"))).getImage();
-        image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\nezu.gif"))).getImage();
-        image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\pika.png"))).getImage();
+        image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\ball.gif"))).getImage();
+        image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\nezu.gif"))).getImage();
+        image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
 
 
     }
@@ -93,7 +93,7 @@ public class GamePanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
 
 
-        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\back.jpg"))).getImage();
+        BackRoundImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\back.jpg"))).getImage();
         updateFrame();
         g2d.drawImage(BackRoundImage, 0, 0, this.getWidth(), this.getHeight(), this);
         for (Iterator<EdgeData> it = graph.edgeIter(); it.hasNext(); ) {

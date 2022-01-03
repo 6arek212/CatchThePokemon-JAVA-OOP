@@ -28,7 +28,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     public void Login(){
         JFrame frame = new JFrame();
-        backRounder = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\pika.png"))).getImage();
+        backRounder = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
 
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +45,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         idField.setPreferredSize(new Dimension(200,200));
         panel.add(idField);
         lodinButton = new JButton("Login");
-       imageIcon = new ImageIcon("src\\main\\java\\GameGui\\login.png");
+       imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login.png");
        lodinButton.setIcon(imageIcon);
         lodinButton.setBounds(110, 90, 100, 40);
         lodinButton.addActionListener(new LoginFrame());
