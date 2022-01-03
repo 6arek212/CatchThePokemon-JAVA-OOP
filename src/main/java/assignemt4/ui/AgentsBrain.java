@@ -61,52 +61,50 @@ public class AgentsBrain {
     public void setNextDest(Agent agent) {
         if (pokemons.isEmpty())
             return;
+        Pokemon pokemon = getClosestPockemon(agent);
+        if (pokemon != null) {
+            agent.setCurrentPok(pokemon);
+            List<NodeData> path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
+            path.add(algo.getGraph().getNode(pokemon.getEdge().getDest()));
+            path.remove(0);
+            agent.setCurrentPath(path);
+            pokemon.setAssigned(true);
+            agent.setDest(path.get(0).getKey());
+        } else {
+            System.out.println("nullllllllllllllllllllllllllllllllllllll");
 
-//        if (pokemon != null) {
-//            agent.setCurrentPok(pokemon);
-//            List<NodeData> path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
-//            path.add(algo.getGraph().getNode(pokemon.getEdge().getDest()));
-//            path.remove(0);
-//            agent.setCurrentPath(path);
-//            pokemon.setAssigned(true);
-//            agent.setDest(path.get(0).getKey());
-//        }else{
-//            System.out.println("nullllllllllllllllllllllllllllllllllllll");
+        }
+
+
+//        if (agent.getCurrentPok() != null && !agent.getCurrentPath().isEmpty() && agent.getSrc() == agent.getCurrentPath().get(0).getKey()) {
+//            agent.getCurrentPath().remove(0);
+//            if (!agent.getCurrentPath().isEmpty())
+//                agent.setDest(agent.getCurrentPath().get(0).getKey());
+//        }
 //
+//        if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getDest()) {
+//            agent.setCurrentPath(null);
+//            agent.setCurrentPok(null);
+//        }
+//
+//        if (agent.getCurrentPok() == null) {
+//            Pokemon pokemon = getClosestPockemon(agent);
+//            if (pokemon != null) {
+//                agent.setCurrentPok(pokemon);
+//                List<NodeData> path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
+//                path.add(algo.getGraph().getNode(pokemon.getEdge().getDest()));
+//                path.remove(0);
+//                agent.setCurrentPath(path);
+//                pokemon.setAssigned(true);
+//                agent.setDest(path.get(0).getKey());
+//                agent.getCurrentPok().setCaptured(false);
+//
+//            }
+//            System.out.println("aaaaaaaaaaaaaaaaaa"+ pokemon);
 //        }
 
 
-
-        if (agent.getCurrentPok() != null && !agent.getCurrentPath().isEmpty() && agent.getSrc() == agent.getCurrentPath().get(0).getKey()) {
-            agent.getCurrentPath().remove(0);
-            if (!agent.getCurrentPath().isEmpty())
-                agent.setDest(agent.getCurrentPath().get(0).getKey());
-        }
-
-        if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getDest()) {
-            agent.setCurrentPath(null);
-            agent.setCurrentPok(null);
-        }
-
-        if (agent.getCurrentPok() == null) {
-            Pokemon pokemon = getClosestPockemon(agent);
-            if (pokemon != null) {
-                agent.setCurrentPok(pokemon);
-                List<NodeData> path = algo.shortestPath(agent.getSrc(), pokemon.getEdge().getSrc());
-                path.add(algo.getGraph().getNode(pokemon.getEdge().getDest()));
-                path.remove(0);
-                agent.setCurrentPath(path);
-                pokemon.setAssigned(true);
-                agent.setDest(path.get(0).getKey());
-                agent.getCurrentPok().setCaptured(false);
-
-            }
-            System.out.println("aaaaaaaaaaaaaaaaaa"+ pokemon);
-        }
-
-
     }
-
 
 
     public void setPokemons(List<Pokemon> pokemons) {

@@ -50,6 +50,9 @@ public class Agent {
         return agents;
     }
 
+    public boolean isOnPokemonEdge() {
+        return currentPok.getEdge().getSrc() == this.getSrc() && this.getDest() == currentPok.getEdge().getDest();
+    }
 
     public void setCurrentPath(List<NodeData> currentPath) {
         this.currentPath = currentPath;
@@ -58,7 +61,6 @@ public class Agent {
     public List<NodeData> getCurrentPath() {
         return currentPath;
     }
-
 
 
     public void setCurrentPok(Pokemon currentPok) {

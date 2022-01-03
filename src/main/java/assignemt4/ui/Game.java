@@ -33,6 +33,7 @@ public class Game {
         this.algo = new AlgorithmsImpl();
         init();
         this.brain = new AgentsBrain(algo, this.pokemons, client, actionListener);
+        client.start();
         new Thread(this::startGame).start();
     }
 
@@ -42,7 +43,7 @@ public class Game {
         System.out.println("agents " + info.getAgents());
         for (int i = 0; i < info.getAgents(); i++) {
             int node = (int) (Math.random() * (algo.getGraph().nodeSize() - 1));
-            client.addAgent("{\"id\":" + node + "}");
+            client.addAgent("{\"id\":" + 2 + "}");
         }
 
         this.agents = Agent.load(client.getAgents());
@@ -62,23 +63,22 @@ public class Game {
 
 
     private void startGame() {
-        client.start();
+
         int cnt = 0;
         while (client.isRunning().equals("true")) {
             this.info = Info.load(client.getInfo());
             updateAgents();
             updatePokemons();
-//            allocatePokemons();
             moveAgents();
+            actionListener.actionEvent(new UIEvents.UpdateUi());
 
             long sleepTime;
-            double min = getMin2() * 1000;
-            double c = closestOnPokEdgePokemon() * 1000;
-            sleepTime = (long) Math.min(min, c);
-            moveAndWait(sleepTime);
+            sleepTime = (long) (getProperWaitingTime() * 1000.0 - 0.001);
+
             cnt++;
-            System.out.println("moved " + cnt);
-            actionListener.actionEvent(new UIEvents.UpdateUi());
+            System.out.println("moved " + cnt + " sleeping tine " + sleepTime);
+            moveAndWait(sleepTime);
+
         }
 
         System.out.println(this.info);
@@ -93,65 +93,29 @@ public class Game {
         }
     }
 
-    private double getMinEdge() {
-        double min = Double.MAX_VALUE;
-        Iterator<EdgeData> it = algo.getGraph().edgeIter();
-        while (it.hasNext()) {
-            EdgeData ed = it.next();
-            if (ed.getWeight() < min) {
-                min = ed.getWeight();
-            }
-        }
-        return min;
-    }
 
-    private double getMin() {
-        double min = Double.MAX_VALUE;
-        for (Agent agent : agents.values()) {
-            double w = algo.getGraph().getEdge(agent.getSrc(), agent.getDest()).getWeight();
-            if (agent.getDest() != -1 && w < min) {
-                min = w;
-            }
-        }
-        return min;
-    }
-
-
-    private double getMin2() {
+    private double getProperWaitingTime() {
         double min = Double.MAX_VALUE;
         for (Agent agent : agents.values()) {
             if (agent.getDest() != -1) {
                 NodeData node = this.algo.getGraph().getNode(agent.getSrc());
                 NodeData node2 = this.algo.getGraph().getNode(agent.getDest());
                 EdgeData ed = algo.getGraph().getEdge(node.getKey(), node2.getKey());
-
                 double dist = node.getLocation().distance(node2.getLocation());
-                double currentDist = agent.getLocation().distance(node2.getLocation());
+                double currentDist;
+
+                if (agent.getCurrentPok() != null && agent.isOnPokemonEdge()) {
+                    if (agent.getSrc() == 3)
+                        System.out.println("capturing the pokemon " + agent.getCurrentPok());
+                    currentDist = Math.abs(agent.getLocation().distance(agent.getCurrentPok().getLocation()) - 0.001);
+                    agent.setCurrentPok(null);
+                } else {
+                    currentDist = agent.getLocation().distance(node2.getLocation());
+                }
                 double timeForEdge = currentDist * (ed.getWeight() / agent.getSpeed()) / dist;
 
-                if (agent.getDest() != -1 && timeForEdge < min) {
+                if (timeForEdge < min) {
                     min = timeForEdge;
-                }
-            }
-        }
-        return min;
-    }
-
-
-    private double closestOnPokEdgePokemon() {
-        double min = Double.MAX_VALUE;
-        for (Agent agent : agents.values()) {
-            if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getSrc() && !agent.getCurrentPok().isCaptured()) {
-                NodeData firstNode = algo.getGraph().getNode(agent.getSrc());
-                NodeData secondNode = this.algo.getGraph().getNode(agent.getCurrentPok().getEdge().getDest());
-
-                double timeForEdge = agent.getCurrentPok().getEdge().getWeight() / agent.getSpeed();
-
-                double dist = firstNode.getLocation().distance(secondNode.getLocation());
-                double time = (timeForEdge * agent.getLocation().distance(agent.getCurrentPok().getLocation()) / dist);
-                agent.getCurrentPok().setCaptured(true);
-                if (time < min) {
-                    min = time;
                 }
             }
         }
@@ -202,10 +166,9 @@ public class Game {
 
     private void moveAgents() {
         for (Agent agent : agents.values()) {
-            if (agent.getDest() == -1) {
-                brain.setNextDest(agent);
-                client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
-            }
+            brain.setNextDest(agent);
+            agent.getCurrentPok().setCaptured(false);
+            client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
         }
     }
 
