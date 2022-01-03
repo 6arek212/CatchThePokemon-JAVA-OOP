@@ -31,7 +31,6 @@ public class GraphViewModel {
         init();
     }
 
-
     private void init() {
         nodes = new ArrayList<>();
         edges = new ArrayList<>();

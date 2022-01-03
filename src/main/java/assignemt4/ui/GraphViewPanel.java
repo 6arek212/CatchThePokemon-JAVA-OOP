@@ -4,6 +4,7 @@ package assignemt4.ui;
 import assignemt4.api.EdgeData;
 import assignemt4.api.GeoLocation;
 import assignemt4.api.NodeData;
+import assignemt4.ex4_java_client.Client;
 import assignemt4.models.Agent;
 import assignemt4.models.NodeDataImpl;
 import assignemt4.models.Pokemon;
@@ -26,11 +27,36 @@ public class GraphViewPanel extends JPanel {
 
     public Range2Range world2Frame;
     private GraphViewModel controller;
+    private ActionListener actionListener;
 
 
-    public GraphViewPanel(GraphViewModel controller) {
-        this.controller = controller;
+    public GraphViewPanel(Client client) {
+        initActionListener();
+        this.controller = new GraphViewModel(actionListener, client);
         world2Frame = WorldGraph.w2f(controller.getAlgo().getGraph(), getFrame());
+    }
+
+
+    /**
+     * View action Listener
+     */
+    private void initActionListener() {
+        actionListener = (UIEvents event) -> {
+            if (event instanceof UIEvents.ShowMessage)
+                JOptionPane.showMessageDialog(null, ((UIEvents.ShowMessage) event).getMessage());
+//            if (event instanceof UIEvents.Labels) {
+//                numberOfEdges.setText("Edges : " + ((UIEvents.Labels) event).getNumberOfEdges() + "");
+//                numberOfNodes.setText("Nodes : " + ((UIEvents.Labels) event).getNumberOfNode() + "");
+//            }
+            if (event instanceof UIEvents.UpdateUi) {
+                //this.updateUI();
+                repaint();
+                System.out.println("Updating ui");
+            }
+            if (event instanceof UIEvents.CalculateRange) {
+                this.updateWorld();
+            }
+        };
     }
 
 

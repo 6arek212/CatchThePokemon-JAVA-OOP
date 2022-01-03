@@ -14,20 +14,14 @@ public class GraphViewFrame extends JFrame {
     private final static int WIDTH = 1000;
     private final static int HEIGHT = 700;
 
-    private GraphViewModel controller;
     private JLabel numberOfNodes;
     private JLabel numberOfEdges;
-    private ActionListener actionListener;
     private GraphViewPanel panel;
 
-    public GraphViewFrame( Client client) {
-        initActionListener();
-        initLabels();
-
-
-        this.controller = new GraphViewModel( actionListener , client);
-        this.panel = new GraphViewPanel(controller);
+    public GraphViewFrame(Client client) {
+        this.panel = new GraphViewPanel( client);
         panel.setBackground(Color.BLACK);
+        initLabels();
 
         add(panel);
         initJframe();
@@ -60,27 +54,6 @@ public class GraphViewFrame extends JFrame {
         add(numberOfNodes);
     }
 
-
-    /**
-     * View action Listener
-     */
-    private void initActionListener() {
-        actionListener = (UIEvents event) -> {
-            if (event instanceof UIEvents.ShowMessage)
-                JOptionPane.showMessageDialog(null, ((UIEvents.ShowMessage) event).getMessage());
-            if (event instanceof UIEvents.Labels) {
-                numberOfEdges.setText("Edges : " + ((UIEvents.Labels) event).getNumberOfEdges() + "");
-                numberOfNodes.setText("Nodes : " + ((UIEvents.Labels) event).getNumberOfNode() + "");
-            }
-            if (event instanceof UIEvents.UpdateUi) {
-                panel.updateUI();
-                repaint();
-            }
-            if (event instanceof UIEvents.CalculateRange) {
-                panel.updateWorld();
-            }
-        };
-    }
 
 
 

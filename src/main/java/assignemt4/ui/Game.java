@@ -32,18 +32,20 @@ public class Game {
         this.actionListener = actionListener;
         this.algo = new AlgorithmsImpl();
         init();
-        this.brain = new AgentsBrain(algo, this.pokemons, client, actionListener);
-        client.start();
-        new Thread(this::startGame).start();
+        this.brain = new AgentsBrain(algo, this.pokemons);
+        start();
     }
 
+    /**
+     * Initialize the game , get Graph , get Agents , get Pokemons
+     */
     private void init() {
         this.algo.init(DirectedWeightedGraphImpl.load(client.getGraph()));
         Info info = Info.load(client.getInfo());
         System.out.println("agents " + info.getAgents());
         for (int i = 0; i < info.getAgents(); i++) {
             int node = (int) (Math.random() * (algo.getGraph().nodeSize() - 1));
-            client.addAgent("{\"id\":" + 2 + "}");
+            client.addAgent("{\"id\":" + node + "}");
         }
 
         this.agents = Agent.load(client.getAgents());
@@ -62,38 +64,53 @@ public class Game {
     }
 
 
-    private void startGame() {
+    /**
+     * game starting point on a separate thread
+     */
+    public void start() {
+        init();
+        new Thread(this::startGame).start();
+    }
 
-        int cnt = 0;
+    /**
+     *  starts the the game
+     */
+    private void startGame() {
+        System.out.println("game starting ....... \n\n");
+
+        client.start();
         while (client.isRunning().equals("true")) {
             this.info = Info.load(client.getInfo());
             updateAgents();
             updatePokemons();
-            moveAgents();
             actionListener.actionEvent(new UIEvents.UpdateUi());
+            allocateAgents();
 
             long sleepTime;
-            sleepTime = (long) (getProperWaitingTime() * 1000.0 - 0.001);
-
-            cnt++;
-            System.out.println("moved " + cnt + " sleeping tine " + sleepTime);
-            moveAndWait(sleepTime);
-
+            sleepTime = (long) (getProperWaitingTime() * 1000);
+            waitAndMode(sleepTime);
         }
-
         System.out.println(this.info);
     }
 
-    private void moveAndWait(long time) {
-        client.move();
+    /**
+     * wait and send a move to the server
+     * @param time time to wait
+     */
+    private void waitAndMode(long time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        client.move();
     }
 
-
+    /**
+     * get the proper waiting
+     *
+     * @return
+     */
     private double getProperWaitingTime() {
         double min = Double.MAX_VALUE;
         for (Agent agent : agents.values()) {
@@ -105,15 +122,13 @@ public class Game {
                 double currentDist;
 
                 if (agent.getCurrentPok() != null && agent.isOnPokemonEdge()) {
-                    if (agent.getSrc() == 3)
-                        System.out.println("capturing the pokemon " + agent.getCurrentPok());
-                    currentDist = Math.abs(agent.getLocation().distance(agent.getCurrentPok().getLocation()) - 0.001);
+                    currentDist = Math.abs(agent.getLocation().distance(agent.getCurrentPok().getLocation()));
                     agent.setCurrentPok(null);
                 } else {
-                    currentDist = agent.getLocation().distance(node2.getLocation());
+                    currentDist = Math.abs(agent.getLocation().distance(node2.getLocation()));
                 }
-                double timeForEdge = currentDist * (ed.getWeight() / agent.getSpeed()) / dist;
 
+                double timeForEdge = (currentDist * (ed.getWeight() / agent.getSpeed())) / dist;
                 if (timeForEdge < min) {
                     min = timeForEdge;
                 }
@@ -122,59 +137,23 @@ public class Game {
         return min;
     }
 
-
-    private boolean isOnPokEdgePokemon() {
+    /**
+     * allocate pokemons for every agent
+     */
+    private void allocateAgents() {
         for (Agent agent : agents.values()) {
-            if (agent.getCurrentPok() != null && agent.getSrc() == agent.getCurrentPok().getEdge().getSrc()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    private boolean isNearPokemon() {
-        for (Agent agent : agents.values()) {
-            if (agent.getCurrentPok() != null && agent.getLocation().distance(agent.getCurrentPok().getLocation()) <= 0.0001) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-//    private void allocatePokemons() {
-//        for (Pokemon pokemon : pokemons) {
-//            findBestAgent(pokemon).getPokemons().add(pokemon);
-//        }
-//    }
-//
-//    private Agent findBestAgent(Pokemon pokemon) {
-//        Agent picked = null;
-//        double min = Double.MAX_VALUE;
-//
-//        for (Agent agent : agents.values()) {
-//            double dist = algo.shortestPathDist(agent.getSrc(), pokemon.getEdge().getSrc()) + pokemon.getEdge().getWeight();
-//            if (dist < min) {
-//                min = dist;
-//                picked = agent;
-//            }
-//        }
-//        return picked;
-//    }
-
-
-    private void moveAgents() {
-        for (Agent agent : agents.values()) {
-            brain.setNextDest(agent);
-            agent.getCurrentPok().setCaptured(false);
-            client.chooseNextEdge("{\"agent_id\":" + agent.getId() + " , next_node_id :" + agent.getDest() + "}");
+            brain.allocate(agent);
+            client.chooseNextEdge("{\"agent_id\":" + agent.getId() + ", \"next_node_id\":" + agent.getDest() + "}");
         }
     }
 
 
+    /**
+     * update the agents from the server
+     */
     private void updateAgents() {
         HashMap<Integer, Agent> newAgents = Agent.load(client.getAgents());
+        System.out.println(newAgents);
         for (Agent agent : newAgents.values()) {
             this.agents.get(agent.getId()).setLocation(agent.getLocation());
             this.agents.get(agent.getId()).setDest(agent.getDest());
@@ -183,6 +162,9 @@ public class Game {
         }
     }
 
+    /**
+     * update the pokemons from the server
+     */
     private void updatePokemons() {
         List<Pokemon> ps = Pokemon.load(client.getPokemons());
         if (ps == null)

@@ -19,7 +19,6 @@ public class Agent {
     private int speed;
     private GeoLocation location;
     private Pokemon currentPok;
-    private List<NodeData> currentPath;
 
     public Agent(AgentJson.AgentJsonInner agentJson) {
         this.id = agentJson.id;
@@ -51,16 +50,12 @@ public class Agent {
     }
 
     public boolean isOnPokemonEdge() {
+        if (currentPok == null)
+            return false;
         return currentPok.getEdge().getSrc() == this.getSrc() && this.getDest() == currentPok.getEdge().getDest();
     }
 
-    public void setCurrentPath(List<NodeData> currentPath) {
-        this.currentPath = currentPath;
-    }
 
-    public List<NodeData> getCurrentPath() {
-        return currentPath;
-    }
 
 
     public void setCurrentPok(Pokemon currentPok) {
