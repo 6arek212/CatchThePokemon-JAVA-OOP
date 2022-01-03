@@ -1,6 +1,8 @@
 package assignemt4.ui;
 
 
+import assignemt4.models.Info;
+
 /**
  *
  *    This class represent the events to be shown on the screen
@@ -18,21 +20,35 @@ public class UIEvents {
 
 
     public static class Labels extends UIEvents {
-        private int numberOfNode;
-        private int numberOfEdges;
+        private Info info;
+        private int maxMoves;
+        private int timeToEnd;
 
-        public Labels(int numberOfNode, int numberOfEdges) {
-            this.numberOfNode = numberOfNode;
-            this.numberOfEdges = numberOfEdges;
+        public Labels(Info info, int maxMoves, int timeToEnd) {
+            this.info = info;
+            this.maxMoves = maxMoves;
+            this.timeToEnd = timeToEnd;
         }
 
-
-        public int getNumberOfNode() {
-            return numberOfNode;
+        public Info getInfo() {
+            return info;
         }
 
-        public int getNumberOfEdges() {
-            return numberOfEdges;
+        public int getMaxMoves() {
+            return maxMoves;
+        }
+
+        public int getTimeToEnd() {
+            return timeToEnd;
+        }
+
+        @Override
+        public String toString() {
+            return "Labels{" +
+                    "info=" + info +
+                    ", maxMoves=" + maxMoves +
+                    ", timeToEnd=" + timeToEnd +
+                    '}';
         }
     }
 

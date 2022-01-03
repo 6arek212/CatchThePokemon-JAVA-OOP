@@ -13,7 +13,7 @@ import assignemt4.ui.GraphViewFrame;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class MyCode {
+public class Ex4 {
     public static void main(String[] args) {
         Client client = new Client();
         try {

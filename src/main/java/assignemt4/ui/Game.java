@@ -27,7 +27,7 @@ public class Game {
     private AgentsBrain brain;
     private ActionListener actionListener;
     private Info info;
-    private int maxMoves;
+    public int maxMoves;
 
     public Game(Client client, ActionListener actionListener) {
         this.client = client;
@@ -70,20 +70,27 @@ public class Game {
      * game starting point on a separate thread
      */
     public void start() {
-        init();
+        client.start();
+        System.out.println("Game starting ....... ");
+        this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
+        System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
         new Thread(this::startGame).start();
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        Runnable helloRunnable = () -> {
+            if (client.isRunning().equals("true"))
+                actionListener.actionEvent(new UIEvents.Labels(info, maxMoves, (Integer.parseInt(client.timeToEnd()) / 1000)));
+            else
+                executor.shutdownNow();
+        };
+        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
+
 
     /**
      * starts the  game
      */
     private void startGame() {
-        System.out.println("Game starting ....... ");
-
-        client.start();
-        this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
-        System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
-
         while (client.isRunning().equals("true") && info.getMoves() <= maxMoves) {
             updateAgents();
             updatePokemons();
@@ -94,7 +101,8 @@ public class Game {
             sleepTime = (long) (getProperWaitingTime() * 1000);
 
             waitAndMode(sleepTime);
-            this.info = Info.load(client.getInfo());
+            if (client.isRunning().equals("true"))
+                this.info = Info.load(client.getInfo());
         }
         System.out.println(this.info);
 
@@ -117,7 +125,8 @@ public class Game {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        client.move();
+        if (client.isRunning().equals("true"))
+            client.move();
     }
 
     /**
@@ -167,7 +176,6 @@ public class Game {
      */
     private void updateAgents() {
         HashMap<Integer, Agent> newAgents = Agent.load(client.getAgents());
-        System.out.println(newAgents);
         for (Agent agent : newAgents.values()) {
             this.agents.get(agent.getId()).setLocation(agent.getLocation());
             this.agents.get(agent.getId()).setDest(agent.getDest());

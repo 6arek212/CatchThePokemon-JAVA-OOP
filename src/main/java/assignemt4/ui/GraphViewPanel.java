@@ -44,14 +44,11 @@ public class GraphViewPanel extends JPanel {
         actionListener = (UIEvents event) -> {
             if (event instanceof UIEvents.ShowMessage)
                 JOptionPane.showMessageDialog(null, ((UIEvents.ShowMessage) event).getMessage());
-//            if (event instanceof UIEvents.Labels) {
-//                numberOfEdges.setText("Edges : " + ((UIEvents.Labels) event).getNumberOfEdges() + "");
-//                numberOfNodes.setText("Nodes : " + ((UIEvents.Labels) event).getNumberOfNode() + "");
-//            }
+            if (event instanceof UIEvents.Labels) {
+                System.out.println(event);
+            }
             if (event instanceof UIEvents.UpdateUi) {
-                //this.updateUI();
                 repaint();
-                System.out.println("Updating ui");
             }
             if (event instanceof UIEvents.CalculateRange) {
                 this.updateWorld();
