@@ -12,21 +12,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.*;
 
-import static java.lang.Thread.sleep;
 
 
 public class GameRunner implements Runnable {
-
-
     private static DirectedWeightedGraph g;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
-    //priority Queue for shortest dis agent and pokemon using
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
     private static double ms = 100;
     private static int agentSize;
     public static Client game;
-    public static boolean Play = true;
     public static long id = -1;
 
     public static void main(String[] args) {
@@ -45,11 +40,12 @@ public class GameRunner implements Runnable {
         }
         Thread GameRun = new Thread(start);
         GameRun.start();
-
     }
 
+
+
     public GameRunner(long id) {
-        this.id = id;
+        GameRunner.id = id;
     }
     @Override
     public void run() {
@@ -79,9 +75,7 @@ public class GameRunner implements Runnable {
 //                ms = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
 //            }
             try {
-
                 Thread.sleep((long) ms);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -96,8 +90,8 @@ public class GameRunner implements Runnable {
 
         int src, dest;
 
-        var agents = gameWorld.getAgents(game.getAgents(), g);
-        var pokemons = gameWorld.fromJsonStringToPoks(game.getPokemons());
+        var agents = GameWorld.getAgents(game.getAgents(), g);
+        var pokemons = GameWorld.fromJsonStringToPoks(game.getPokemons());
         DirectedWeightedGraphAlgorithms Aglo = new AlgorithmsImpl();
         gameWorld.setAgents(agents);
         gameWorld.setPokemons(pokemons);
@@ -136,20 +130,7 @@ public class GameRunner implements Runnable {
 
     }
 
-    //if the agent close to his pok increase the move
-    public boolean isCloseToPok(List<Pokemon> pokemons, List<Agent> agents) {
 
-        for (Agent agent : agents) {
-            Pokemon pokemon = pokemons.get(agent.getCurrPok());
-            if (agent.getCurrEdge() == pokemon.getEdge() &&
-                    agent.getPos().distance(pokemon.getPos()) < 0.3 && agent.getSpeed() > 2)
-                return true;
-
-
-        }
-
-        return false;
-    }
 
     // estimate time for an agent to reach his Pokémon using motion equation
     public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
@@ -236,12 +217,8 @@ public class GameRunner implements Runnable {
                 }
 
                 listPriorityQueue.add(agentToPok);
-
             }
-
         }
-
-
     }
 
     /**
