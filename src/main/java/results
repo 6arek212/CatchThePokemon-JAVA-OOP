@@ -1,8 +1,20 @@
 
+Case 0:
+{"GameServer":{"pokemons":1,"is_logged_in":false,"moves":39,"grade":85,"game_level":0,"max_user_level":-1,"id":0,"graph":"data/A0","agents":1}}
+
+Case 1:
+{"GameServer":{"pokemons":2,"is_logged_in":false,"moves":214,"grade":526,"game_level":1,"max_user_level":-1,"id":0,"graph":"data/A0","agents":1}}
 
 
+Case 2:
+{"GameServer":{"pokemons":3,"is_logged_in":false,"moves":77,"grade":249,"game_level":2,"max_user_level":-1,"id":0,"graph":"data/A0","agents":1}}
+
+Case 3:
+{"GameServer":{"pokemons":4,"is_logged_in":false,"moves":256,"grade":814,"game_level":3,"max_user_level":-1,"id":0,"graph":"data/A0","agents":1}}
 
 
+Case 4:
+{"GameServer":{"pokemons":5,"is_logged_in":false,"moves":47,"grade":121,"game_level":4,"max_user_level":-1,"id":0,"graph":"data/A1","agents":1}}
 
 
 Case 5:
@@ -27,3 +39,23 @@ Case 9:
 
 Case 10:
 {"GameServer":{"pokemons":5,"is_logged_in":false,"moves":32,"grade":53,"game_level":10,"max_user_level":-1,"id":0,"graph":"data/A2","agents":1}}
+
+
+Case 11:
+{"GameServer":{"pokemons":6,"is_logged_in":false,"moves":357,"grade":1515,"game_level":11,"max_user_level":-1,"id":0,"graph":"data/A2","agents":3}}
+
+
+Case 12:
+{"GameServer":{"pokemons":1,"is_logged_in":false,"moves":30,"grade":40,"game_level":12,"max_user_level":-1,"id":0,"graph":"data/A3","agents":1}}
+
+Case 13:
+{"GameServer":{"pokemons":2,"is_logged_in":false,"moves":154,"grade":310,"game_level":13,"max_user_level":-1,"id":0,"graph":"data/A3","agents":2}}
+
+
+Case 14:
+{"GameServer":{"pokemons":3,"is_logged_in":false,"moves":56,"grade":115,"game_level":14,"max_user_level":-1,"id":0,"graph":"data/A3","agents":3}}
+
+Case 15:
+{"GameServer":{"pokemons":4,"is_logged_in":false,"moves":127,"grade":256,"game_level":15,"max_user_level":-1,"id":0,"graph":"data/A3","agents":1}}
+
+
