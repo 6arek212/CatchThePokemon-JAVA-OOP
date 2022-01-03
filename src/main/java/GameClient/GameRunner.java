@@ -1,6 +1,5 @@
 package GameClient;
 
-
 import GameClient.utils.Point;
 import GameGui.GameFrame;
 import GameGui.LoginFrame;
@@ -8,16 +7,19 @@ import api.*;
 import implementation.AlgorithmsImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.*;
+
+
+/**
+ * This class represent the main brain of the game
+ */
 
 
 public class GameRunner implements Runnable {
     private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
-//    private static double ms = 100;
     private static int agentSize;
     public static Client game;
     private long id;
@@ -29,7 +31,7 @@ public class GameRunner implements Runnable {
         } else {
             LoginFrame login = new LoginFrame();
             login.Login();
-            while (login.isOn) {
+            while (login.isTurn) {
                 System.out.print("");
             }
             start = new GameRunner(login.id);
@@ -42,6 +44,10 @@ public class GameRunner implements Runnable {
         this.id = id;
     }
 
+
+    /**
+     * Invoking agentController and run the game
+     */
     @Override
     public void run() {
         game = new Client();

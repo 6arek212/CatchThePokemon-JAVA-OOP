@@ -9,19 +9,17 @@ import api.NodeData;
 import implementation.AlgorithmsImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.*;
-
+/**
+ * This class represent an overall algorithm for the game
+ */
 public class AgentController {
-
 
     private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
     public static double ms = 100;
-    private static int agentSize;
-    public static Client game;
     public static long id = -1;
 
     public AgentController(DirectedWeightedGraph graph, GameWorld gameWorld, GameFrame gameFrame) {
@@ -32,7 +30,9 @@ public class AgentController {
     }
 
 
-
+    /**
+     * Move agents in their best assigned path
+     */
     public void moveAgents(Client game) {
         game.move();
 
@@ -49,6 +49,11 @@ public class AgentController {
 
     }
 
+
+    /**
+     * Take the best due (agent,Pokémon) and assign them together
+     * and update the agent the shortest path to this Pokémon
+     */
     public void assignPokemons(List<Pokemon> pokemons, List<Agent> agents, DirectedWeightedGraphAlgorithms Algo) {
         int src, dest;
         int count = 0;
@@ -83,7 +88,11 @@ public class AgentController {
 
     }
 
-    // estimate time for an agent to reach his Pokémon using motion equation
+
+    /**
+     * Estimate time for specific  agent the Pokémon assign to him
+     * using motion equation
+     */
     public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
         var e = agent.getCurrEdge();
         var p = pokemons.get(agent.getCurrPok());
@@ -113,8 +122,10 @@ public class AgentController {
 
     }
 
-
-    //    for each agent attach to him his path
+    /**
+     * Giving the next destination for every agent according
+     * to his current shortest path
+     */
     private static void nextDestination(Client game, List<Pokemon> pokemons, List<Agent> agents) {
         double timeAv = 0;
         for (int i = 0; i < agents.size(); i++) {
@@ -134,8 +145,12 @@ public class AgentController {
         }
     }
 
-    //compute distance between each agent and pok [pok , agent , dist]
-    // to give the best agent to a pok
+
+    /**
+     * Compute distance between each agent and Pokémon [pok , agent , dist]
+     * and add them to Priority Queue to take the Pokémon and agent with the least dist
+     */
+
     public void computeDistance(List<Pokemon> pokemons, List<Agent> agents, DirectedWeightedGraph g) {
         gameWorld.updatePokemonsEdges(pokemons);
         int src, dest;

@@ -21,7 +21,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     private static JTextField idField;
     private static JButton lodinButton;
     private static ImageIcon logo;
-    public boolean isOn = true;
+    public boolean isTurn = true;
     public int id;
     public ImageIcon imageIcon ;
     public Image backRounder;
@@ -58,7 +58,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         this.id = Integer.parseInt(idField.getText());
-        isOn = false;
+        isTurn = false;
 
     }
 }

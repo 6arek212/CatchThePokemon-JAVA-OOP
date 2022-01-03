@@ -6,6 +6,11 @@ import api.EdgeData;
 
 import java.util.Objects;
 
+/**
+ * This class represent an Pokémon on the Game
+ */
+
+
 public class Pokemon {
 
 
