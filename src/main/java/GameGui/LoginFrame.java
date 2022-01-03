@@ -23,26 +23,35 @@ public class LoginFrame extends JFrame implements ActionListener {
     private static ImageIcon logo;
     public boolean isOn = true;
     public int id;
+    public ImageIcon imageIcon ;
+    public Image backRounder;
 
     public void Login(){
         JFrame frame = new JFrame();
-        frame.setSize(300, 150);
+        backRounder = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\pika.png"))).getImage();
+
+        frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         frame.add(panel);
+//        frame.setBackground(Color.yellow);
         frame.setLocationRelativeTo(null);
         panel.setLayout(null);
-        idLabel = new JLabel("ID:");
-        idLabel.setBounds(10, 10, 80, 25);
+        idLabel = new JLabel("Enter ID:");
+        idLabel.setBounds(15, 15, 80, 25);
         panel.add(idLabel);
         idField = new JTextField(20);
-        idField.setBounds(100, 10, 165, 25);
+        idField.setBounds(90, 10, 160, 25);
+        idField.setPreferredSize(new Dimension(200,200));
         panel.add(idField);
         lodinButton = new JButton("Login");
-        lodinButton.setBounds(100, 70, 100, 40);
+       imageIcon = new ImageIcon("src\\main\\java\\GameGui\\login.png");
+       lodinButton.setIcon(imageIcon);
+        lodinButton.setBounds(110, 90, 100, 40);
         lodinButton.addActionListener(new LoginFrame());
         panel.add(lodinButton);
         lodinButton.addActionListener(this);
+        frame.setIconImage(backRounder);
         frame.setVisible(true);
     }
 

@@ -71,11 +71,9 @@ public class Agent {
         return isMoving;
     }
 
-
     private void setCurrNode(int src) {
         this.currNode = g.getNode(src);
     }
-
 
     public int getId() {
         return this.id;
@@ -83,11 +81,6 @@ public class Agent {
 
     public GeoLocation getPos() {
         return pos;
-    }
-
-
-    public double getValue() {
-        return this.value;
     }
 
     public EdgeData getCurrEdge() {

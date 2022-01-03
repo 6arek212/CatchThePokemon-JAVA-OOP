@@ -36,7 +36,6 @@ public class GameRunner implements Runnable {
         }
         else{
             LoginFrame login = new LoginFrame();
-
             login.Login();
             while(login.isOn) {
                 System.out.print("");
@@ -75,9 +74,6 @@ public class GameRunner implements Runnable {
             gameFrame.repaint();
             gameWorld.setTimeToend((int) (Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
             gameWorld.setInfo(game.getInfo());
-//            if (agentSize > 1) {
-//                ms = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
-//            }
             try {
 
                 Thread.sleep((long) ms);
@@ -155,7 +151,7 @@ public class GameRunner implements Runnable {
     public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
         var e = agent.getCurrEdge();
         var p = pokemons.get(agent.getCurrPok());
-        var pos = agent.getPos();
+        var agentPos = agent.getPos();
         var speed = agent.getSpeed();
         var w = e.getWeight();
         double estimatedTime = 100;
@@ -164,11 +160,11 @@ public class GameRunner implements Runnable {
             GeoLocation dest = g.getNode(e.getDest()).getLocation();
             GeoLocation src = g.getNode(e.getSrc()).getLocation();
             double de = src.distance(dest);
-            double dist = pos.distance(dest);
+            double dist = agentPos.distance(dest);
 
             //if the agent and the pokemon on the same edge dist is the destination between them
             if (p.getEdge().getSrc() == e.getSrc() && p.getEdge().getDest() == e.getDest()) {
-                dist = pos.distance(p.getPos());
+                dist = agentPos.distance(p.getPos());
             }
             //motion equation 
             double n = dist / de;
