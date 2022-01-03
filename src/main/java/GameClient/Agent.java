@@ -149,7 +149,7 @@ public class Agent {
 
     public String toString() {
 
-        return "Agemt{" +
+        return "Agent{" +
                 "id=" + this.id +
                 ",value=" + this.value +
                 ",pos=" + this.pos +

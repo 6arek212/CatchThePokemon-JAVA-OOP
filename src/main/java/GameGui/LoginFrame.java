@@ -45,9 +45,10 @@ public class LoginFrame extends JFrame implements ActionListener {
         idField.setPreferredSize(new Dimension(200,200));
         panel.add(idField);
         lodinButton = new JButton("Login");
-       imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login.png");
-       lodinButton.setIcon(imageIcon);
-        lodinButton.setBounds(110, 90, 100, 40);
+        lodinButton.setBounds(110, 90, 300, 200);
+        imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login.png");
+        lodinButton.setIcon(imageIcon);
+
         lodinButton.addActionListener(new LoginFrame());
         panel.add(lodinButton);
         lodinButton.addActionListener(this);
