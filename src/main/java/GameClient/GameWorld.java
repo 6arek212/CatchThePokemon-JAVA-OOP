@@ -95,7 +95,7 @@ public class GameWorld {
                 int t = pk.getInt("type");
                 double v = pk.getDouble("value");
                 String p = pk.getString("pos");
-                Pokemon pokemon = new Pokemon(new Point(p), t, v, 0, null);
+                Pokemon pokemon = new Pokemon(new Point(p), t, v, null);
 
                 pokemons.add(pokemon);
             }

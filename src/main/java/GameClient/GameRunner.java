@@ -2,11 +2,8 @@ package GameClient;
 
 
 import GameClient.utils.Point;
-import GameClient.utils.Point;
 import GameGui.GameFrame;
 import api.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import implementation.AlgorithmsImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +89,7 @@ public class GameRunner implements Runnable {
             Pokemon pokemon = pokemons.get((int) p);
             Agent agent = agents.get((int) a);
             //if the agent is not moving and noOne Took the pokemon
-            if (!agent.isMoving() && !pokemon.isCatched()) {
+            if (!agent.isMoving() && !pokemon.isAssigned()) {
                 src = agents.get((int) a).getSrc();
                 dest = pokemon.getEdge().getSrc();
                 NodeData LastDestNode = g.getNode(pokemon.getEdge().getDest());
@@ -106,7 +103,7 @@ public class GameRunner implements Runnable {
                 agent.setAgentCurrPath(path);
 
                 count++;
-                pokemon.setCatched(true);
+                pokemon.setAssigned(true);
                 agent.setIsMoving(true);
             }
 
@@ -178,7 +175,6 @@ public class GameRunner implements Runnable {
             }
             ms = timeAv;
         }
-
     }
 
     //compute distance between each agent and pok [pok , agent , dist]
@@ -225,7 +221,9 @@ public class GameRunner implements Runnable {
 
     }
 
-
+    /**
+     * Initialize the game , get Graph , get Agents , get Pokemons
+     */
     private void initGame(Client game) {
         String pokz = game.getPokemons();
         gameWorld.setGraph(g);

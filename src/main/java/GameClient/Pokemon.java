@@ -3,7 +3,6 @@ package GameClient;
 
 import GameClient.utils.Point;
 import api.EdgeData;
-import api.GeoLocation;
 
 import java.util.Objects;
 
@@ -13,14 +12,11 @@ public class Pokemon {
     private double value;
     private int type;
     private Point pos;
-    //curr edge the pokemon on it
     private EdgeData edge;
-
-    // if the pok been catched by an agent
-    private boolean isCatched;
+    private boolean isAssigned;
 
 
-    public Pokemon(Point pos, int type, double value, double s, EdgeData e) {
+    public Pokemon(Point pos, int type, double value, EdgeData e) {
         this.pos = pos;
         this.type = type;
         this.value = value;
@@ -28,14 +24,14 @@ public class Pokemon {
 
     }
 
-    public boolean isCatched() {
+    public boolean isAssigned() {
 
-        return this.isCatched;
+        return this.isAssigned;
     }
 
-    public void setCatched(boolean isCatched) {
+    public void setAssigned(boolean isCatched) {
 
-        this.isCatched = isCatched;
+        this.isAssigned = isCatched;
     }
 
     public int getType() {
