@@ -21,12 +21,15 @@ public class Pokemon {
     private GeoLocation location;
     private EdgeData edge;
     private boolean isAssigned;
+    private boolean isCaptured;
 
     public Pokemon(PokemonJson.PokemonJsonInner pokemonJsonInner) {
         this.value = pokemonJsonInner.value;
         this.type = pokemonJsonInner.type;
         this.location = new GeoLocationImpl(pokemonJsonInner.locationString);
         this.edge = null;
+        isAssigned = false;
+        isCaptured = false;
     }
 
     public static List<Pokemon> load(String json) {
@@ -54,12 +57,13 @@ public class Pokemon {
         double a = (g1.y() - g2.y()) / (g1.x() - g2.x());
         double b = g1.y() - a * g1.x();
 
-        double eps = 0.001;
+        double eps = 0.0001;
         double dist1 = g1.distance(location);
         double dist2 = g2.distance(location);
 
         return Math.abs(location.x() * a + b) <= location.y() + eps && Math.abs(dist1 + dist2) <= dist + eps;
     }
+
 
     public void setEdge(DirectedWeightedGraph graph) {
         Iterator<EdgeData> it = graph.edgeIter();
@@ -87,6 +91,13 @@ public class Pokemon {
         return value == pokemon.value && type == pokemon.type && location.equals(pokemon.location) && Objects.equals(edge, pokemon.edge);
     }
 
+    public boolean isCaptured() {
+        return isCaptured;
+    }
+
+    public void setCaptured(boolean captured) {
+        isCaptured = captured;
+    }
 
     public boolean isAssigned() {
         return isAssigned;

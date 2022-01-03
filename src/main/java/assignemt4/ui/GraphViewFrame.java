@@ -20,12 +20,12 @@ public class GraphViewFrame extends JFrame {
     private ActionListener actionListener;
     private GraphViewPanel panel;
 
-    public GraphViewFrame(DirectedWeightedGraphAlgorithms alg, Client client) {
+    public GraphViewFrame( Client client) {
         initActionListener();
         initLabels();
 
 
-        this.controller = new GraphViewModel(alg, actionListener , client);
+        this.controller = new GraphViewModel( actionListener , client);
         this.panel = new GraphViewPanel(controller);
         panel.setBackground(Color.BLACK);
 

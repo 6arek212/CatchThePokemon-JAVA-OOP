@@ -23,14 +23,12 @@ public class GraphViewModel {
     // UI lists
     private List<NodeData> nodes;
     private List<EdgeData> edges;
-    private DirectedWeightedGraphAlgorithms algo;
     private Game game;
 
 
-    public GraphViewModel(DirectedWeightedGraphAlgorithms graphAlg, ActionListener actionListener, Client client) {
-        this.algo = graphAlg;
+    public GraphViewModel( ActionListener actionListener, Client client) {
+        this.game = new Game(client,actionListener);
         init();
-        this.game = new Game(client,algo,actionListener);
     }
 
 
@@ -38,12 +36,12 @@ public class GraphViewModel {
         nodes = new ArrayList<>();
         edges = new ArrayList<>();
 
-        Iterator<EdgeData> it = this.algo.getGraph().edgeIter();
+        Iterator<EdgeData> it = this.game.getAlgo().getGraph().edgeIter();
         while (it.hasNext()) {
             EdgeData ed = it.next();
             this.edges.add(ed);
         }
-        Iterator<NodeData> it1 = this.algo.getGraph().nodeIter();
+        Iterator<NodeData> it1 = this.game.getAlgo().getGraph().nodeIter();
         while (it1.hasNext()) {
             this.nodes.add(it1.next());
         }
@@ -51,11 +49,11 @@ public class GraphViewModel {
 
 
     public DirectedWeightedGraphAlgorithms getAlgo() {
-        return algo;
+        return game.getAlgo();
     }
 
     public NodeData getNode(int key) {
-        return this.algo.getGraph().getNode(key);
+        return this.game.getAlgo().getGraph().getNode(key);
     }
 
     public List<NodeData> getNodes() {

@@ -23,7 +23,7 @@ public class MyCode {
         }
         String graphStr = client.getGraph();
         DirectedWeightedGraph graph = DirectedWeightedGraphImpl.load(graphStr);
-        GraphViewFrame view = new GraphViewFrame(new AlgorithmsImpl(graph) , client);
+        GraphViewFrame view = new GraphViewFrame(client);
     }
 
 }
