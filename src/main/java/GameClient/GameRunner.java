@@ -133,13 +133,12 @@ public class GameRunner implements Runnable {
     }
  // estimate time for an agent to reach his Pokémon using motion equation
     public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
-        double ddt = 100;
         var e = agent.getCurrEdge();
         var p = pokemons.get(agent.getCurrPok());
         var pos = agent.getPos();
         var speed = agent.getSpeed();
         var w = e.getWeight();
-        double estimatedTime;
+        double estimatedTime= 100;
 
         if (e != null) {
             GeoLocation dest = g.getNode(e.getDest()).getLocation();
@@ -155,9 +154,8 @@ public class GameRunner implements Runnable {
             double n = dist / de;
             double dt = w * n / speed;
             //to millis seconds
-            ddt = (1000.0 * dt);
+            estimatedTime = (1000.0 * dt);
         }
-        estimatedTime = ddt;
 
         return estimatedTime;
 
