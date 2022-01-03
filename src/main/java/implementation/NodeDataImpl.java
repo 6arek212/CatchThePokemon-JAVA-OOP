@@ -18,8 +18,7 @@ public class NodeDataImpl implements NodeData {
     private GeoLocation GeoLoc;
     private String info;
     private Shape visualNode;
-    private Color nodeState;
-    private boolean isVisit;
+
 
     private static final int r =5;
 
@@ -33,12 +32,12 @@ public class NodeDataImpl implements NodeData {
 
         this.info = "";
     }
-    public NodeDataImpl(Point GeoLoc , Range2Range WorldToFrame) {
+    public NodeDataImpl(GeoLocation GeoLoc , Range2Range WorldToFrame) {
 
         this.GeoLoc = GeoLoc;
         Point fp = WorldToFrame.worldToframe((Point) this.GeoLoc);
         this.visualNode = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
-        nodeState = Color.WHITE;
+
 
     }
 
@@ -59,16 +58,7 @@ public class NodeDataImpl implements NodeData {
         return this.visualNode;
 
     }
-    public Color getNodeState() {
-        return nodeState;
-    }
-    public void setNodeState(Color c) {
-        nodeState = c;
-    }
 
-    public void setVisualNode(Shape v) {
-        visualNode = v;
-    }
     @Override
     public int getKey() {
         return this.key;
