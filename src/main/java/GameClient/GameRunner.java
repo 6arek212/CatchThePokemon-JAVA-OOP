@@ -13,9 +13,8 @@ import java.io.IOException;
 import java.util.*;
 
 
-
 public class GameRunner implements Runnable {
-    private static DirectedWeightedGraph g;
+    private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
     private static GameFrame gameFrame;
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
@@ -26,14 +25,13 @@ public class GameRunner implements Runnable {
 
     public static void main(String[] args) {
         GameRunner start;
-        if(args.length == 2) {
+        if (args.length == 2) {
             start = new GameRunner(Integer.parseInt(args[0]));
-        }
-        else{
+        } else {
             LoginFrame login = new LoginFrame();
 
             login.Login();
-            while(login.isOn) {
+            while (login.isOn) {
                 System.out.print("");
             }
             start = new GameRunner(login.id);
@@ -43,25 +41,23 @@ public class GameRunner implements Runnable {
     }
 
 
-
     public GameRunner(long id) {
         GameRunner.id = id;
     }
+
     @Override
     public void run() {
         game = new Client();
         LoginFrame loginFrame = new LoginFrame();
-
-
         try {
             game.startConnection("127.0.0.1", 6666);
         } catch (IOException e) {
             e.printStackTrace();
         }
         gameWorld = new GameWorld();
-        g = gameWorld.fromJsonToGraph(game.getGraph());
+        graph = gameWorld.fromJsonToGraph(game.getGraph());
         DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl();
-        ga.init(g);
+        ga.init(graph);
         game.login(Long.toString(id));
         initGame(game);
         game.addAgent("{\"id\":0}");
@@ -69,11 +65,8 @@ public class GameRunner implements Runnable {
         while (game.isRunning().equals("true")) {
             moveAgents(game);
             gameFrame.repaint();
-            gameWorld.setTimeToend((int) (Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
+            gameWorld.setTimeToend((Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
             gameWorld.setInfo(game.getInfo());
-//            if (agentSize > 1) {
-//                ms = isCloseToPok(gameWorld.getPokemons(), gameWorld.getAgents()) ? 20 : 120;
-//            }
             try {
                 Thread.sleep((long) ms);
             } catch (Exception e) {
@@ -90,14 +83,14 @@ public class GameRunner implements Runnable {
 
         int src, dest;
 
-        var agents = GameWorld.getAgents(game.getAgents(), g);
+        var agents = GameWorld.getAgents(game.getAgents(), graph);
         var pokemons = GameWorld.fromJsonStringToPoks(game.getPokemons());
         DirectedWeightedGraphAlgorithms Aglo = new AlgorithmsImpl();
         gameWorld.setAgents(agents);
         gameWorld.setPokemons(pokemons);
-        gameWorld.setGraph(g);
-        Aglo.init(g);
-        computeDistance(pokemons, agents, g);
+        gameWorld.setGraph(graph);
+        Aglo.init(graph);
+        computeDistance(pokemons, agents, graph);
         int count = 0;
         while (!listPriorityQueue.isEmpty() && count < agents.size()) {
             System.out.println(listPriorityQueue);
@@ -112,7 +105,7 @@ public class GameRunner implements Runnable {
             if (!agent.isMoving() && !pokemon.isAssigned()) {
                 src = agents.get((int) a).getSrc();
                 dest = pokemon.getEdge().getSrc();
-                NodeData LastDestNode = g.getNode(pokemon.getEdge().getDest());
+                NodeData LastDestNode = graph.getNode(pokemon.getEdge().getDest());
                 LinkedList<NodeData> path = new LinkedList<>();
                 agent.setCurrPokemon((int) p);
                 if (src != dest) {
@@ -131,7 +124,6 @@ public class GameRunner implements Runnable {
     }
 
 
-
     // estimate time for an agent to reach his Pokémon using motion equation
     public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
         var e = agent.getCurrEdge();
@@ -142,8 +134,8 @@ public class GameRunner implements Runnable {
         double estimatedTime = 100;
 
         if (e != null) {
-            GeoLocation dest = g.getNode(e.getDest()).getLocation();
-            GeoLocation src = g.getNode(e.getSrc()).getLocation();
+            GeoLocation dest = graph.getNode(e.getDest()).getLocation();
+            GeoLocation src = graph.getNode(e.getSrc()).getLocation();
             double de = src.distance(dest);
             double dist = pos.distance(dest);
 
@@ -151,7 +143,7 @@ public class GameRunner implements Runnable {
             if (p.getEdge().getSrc() == e.getSrc() && p.getEdge().getDest() == e.getDest()) {
                 dist = pos.distance(p.getPos());
             }
-            //motion equation 
+            //motion equation
             double n = dist / de;
             double dt = w * n / speed;
             //to millis seconds
@@ -161,6 +153,7 @@ public class GameRunner implements Runnable {
         return estimatedTime;
 
     }
+
 
     //    for each agent attach to him his path
     private static void nextDestination(Client game, List<Pokemon> poks, List<Agent> age) {
@@ -226,7 +219,7 @@ public class GameRunner implements Runnable {
      */
     private void initGame(Client game) {
         String pokz = game.getPokemons();
-        gameWorld.setGraph(g);
+        gameWorld.setGraph(graph);
         gameWorld.setPokemons(GameWorld.fromJsonStringToPoks(pokz));
         String info = game.getInfo();
         gameFrame = new GameFrame(gameWorld);
@@ -244,7 +237,7 @@ public class GameRunner implements Runnable {
             for (int i = 0; i < agentSize; i++) {
                 game.addAgent("{\"id\":" + i + "}");
             }
-            gameWorld.setAgents(GameWorld.getAgents(game.getAgents(), g));
+            gameWorld.setAgents(GameWorld.getAgents(game.getAgents(), graph));
         } catch (JSONException e) {
             e.printStackTrace();
         }
