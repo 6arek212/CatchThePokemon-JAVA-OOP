@@ -154,7 +154,7 @@ public class GameWorld {
     private void fromJsonStringToFile(String json) {
         try {
             String str = (new JSONObject(json)).toString(4);
-            File file = new File("C:\\Users\\97254\\IdeaProjects\\CatchThePokemon-OOP-Assignment-4-JAVA\\src\\main\\java\\data\\A.json");
+            File file = new File("src\\main\\java\\data\\A.json");
             FileWriter myWriter = new FileWriter(file);
             myWriter.write(str);
             myWriter.close();
