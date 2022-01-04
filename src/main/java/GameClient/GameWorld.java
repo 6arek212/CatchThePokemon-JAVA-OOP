@@ -71,14 +71,14 @@ public class GameWorld {
     }
 
 
-    public static List<Agent> getAgents(String aa, DirectedWeightedGraph gg) {
+    public static List<Agent> getAgents(String json, DirectedWeightedGraph graph) {
         ArrayList<Agent> agents = new ArrayList<Agent>();
         try {
-            JSONObject jsonObject = new JSONObject(aa);
-            System.out.println(aa);
+            JSONObject jsonObject = new JSONObject(json);
+            System.out.println(json);
             JSONArray ags = jsonObject.getJSONArray("Agents");
             for (int i = 0; i < ags.length(); i++) {
-                Agent c = new Agent(gg, 0);
+                Agent c = new Agent(graph, 0);
                 c.updateAgent(ags.get(i).toString());
                 agents.add(c);
             }
@@ -90,10 +90,10 @@ public class GameWorld {
     }
 
 
-    public static ArrayList<Pokemon> fromJsonStringToPoks(String fs) {
+    public static ArrayList<Pokemon> fromJsonStringToPoks(String json) {
         ArrayList<Pokemon> pokemons = new ArrayList<Pokemon>();
         try {
-            JSONObject jsonObject = new JSONObject(fs);
+            JSONObject jsonObject = new JSONObject(json);
             JSONArray ags = jsonObject.getJSONArray("Pokemons");
             for (int i = 0; i < ags.length(); i++) {
                 JSONObject pp = ags.getJSONObject(i);
@@ -113,8 +113,6 @@ public class GameWorld {
 
     //finding pokemons edges
     public void updatePokemonsEdges(List<Pokemon> pokemons) {
-
-
         for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
             NodeData node = it.next();
             for (Iterator<EdgeData> iter = g.edgeIter(node.getKey()); iter.hasNext(); ) {
@@ -124,19 +122,10 @@ public class GameWorld {
                     if (CheckOnEdge(pokemon.getPos(), edge, pokemon.getType(), g)) {
 
                         pokemon.setEdge(edge);
-
                     }
-
-
                 }
-
-
             }
-
-
         }
-
-
     }
 
 
