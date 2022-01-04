@@ -24,11 +24,9 @@ public class GamePanel extends JPanel {
     private GameFrame frame;
     private Image image, image2, image3, BackRoundImage;
     private int time, duration = -1, grade, moves, level;
-    private Client game;
     private JLabel InfoLabel = new JLabel();
 
     GamePanel(GameWorld gameWorld) {
-        this.game = game;
         this.gameWorld = gameWorld;
         graph = gameWorld.getGraph();
         this.setPreferredSize(new Dimension(1000, 700));
@@ -37,8 +35,6 @@ public class GamePanel extends JPanel {
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\ball.gif"))).getImage();
         image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\nezu.gif"))).getImage();
         image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
-
-
     }
 
     private void updateFrame() {

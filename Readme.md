@@ -12,9 +12,16 @@ Catch the pokemon game , The objective is to catch as many pokemons as possible 
 without exceeding the number of moves allowed 
 
 
+
+
 </br>
 
+
+
 ![](imgs/game_running.gif)
+
+
+
 
 ## How To Run
 
