@@ -1,6 +1,6 @@
 
 
-# Catch The Pokemon:<img hight="300" width="700" alt="GIF" align="center" src="https://github.com/6arek212/CatchThePokemon-OOP-Assignment-4-JAVA/blob/wissam-v1/src/main/java/GameGui/tools/ball.gif">
+# -----------------------Catch The Pokemon------------------
 
 ![Builds](https://github.com/project-chip/connectedhomeip/workflows/Builds/badge.svg)
 
