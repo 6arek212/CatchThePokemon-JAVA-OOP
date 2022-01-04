@@ -7,7 +7,7 @@
 ![Builds](https://github.com/project-chip/connectedhomeip/workflows/Builds/badge.svg)
 
 <p align="center">
-<img style="border-radius: 30px" src="https://github.com/6arek212/CatchThePokemon-OOP-Assignment-4-JAVA/blob/wissam-v1/src/main/java/GameGui/tools/intro.gif" width="200px">
+<img style="border-radius: 30px;" src="https://github.com/6arek212/CatchThePokemon-OOP-Assignment-4-JAVA/blob/wissam-v1/src/main/java/GameGui/tools/intro.gif" width="200px">
 </p>
 
 
