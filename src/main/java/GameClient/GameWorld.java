@@ -75,7 +75,7 @@ public class GameWorld {
         ArrayList<Agent> agents = new ArrayList<Agent>();
         try {
             JSONObject jsonObject = new JSONObject(json);
-            System.out.println(json);
+            //System.out.println(json);
             JSONArray ags = jsonObject.getJSONArray("Agents");
             for (int i = 0; i < ags.length(); i++) {
                 Agent c = new Agent(graph, 0);
