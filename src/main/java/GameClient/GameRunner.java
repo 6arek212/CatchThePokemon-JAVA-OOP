@@ -97,7 +97,6 @@ public class GameRunner implements Runnable {
             ArrayList<Pokemon> p = GameWorld.fromJsonStringToPoks(game.getPokemons());
             p.sort(Comparator.comparingInt(o -> (int) o.getValue()));
             gameWorld.updatePokemonsEdges(p);
-            System.out.println(agentSize);
             Random random = new Random();
             for (int i = 0; i < agentSize; i++) {
                 game.addAgent("{\"id\":" + i + "}");
