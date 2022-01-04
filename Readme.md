@@ -1,6 +1,6 @@
 
 
-# Catch The Pokemon :D
+# -----------------Catch The Pokemon---------------
 
 ![Builds](https://github.com/project-chip/connectedhomeip/workflows/Builds/badge.svg)
 
