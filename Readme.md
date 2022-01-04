@@ -40,7 +40,6 @@ without exceeding the number of moves allowed
 
 **The jar must be placed in the java folder ! & make sure you have java 11 or greater**
 
-![](images/info.png)
 
 </br>
 
