@@ -173,8 +173,7 @@ public class GamePanel extends JPanel {
         Shape node = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
         g.drawImage(image3, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
         g.setFont(new Font("David", Font.PLAIN, 15));
-        g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() - 4 * r);
-
+        g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() -  r);
 
     }
 

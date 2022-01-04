@@ -65,7 +65,7 @@ public class AgentController {
             Pokemon pokemon = pokemons.get((int) p);
             Agent agent = agents.get((int) a);
             //if the agent is not moving and noOne Took the pokemon
-            if (!agent.isMoving() && !pokemon.isAssigned()) {
+            if (!agent.isMoving()&&!pokemon.isAssigned()) {
                 src = agents.get((int) a).getSrc();
                 dest = pokemon.getEdge().getSrc();
                 NodeData LastDestNode = graph.getNode(pokemon.getEdge().getDest());
@@ -83,7 +83,6 @@ public class AgentController {
         }
         listPriorityQueue.clear();
 
-
     }
 
 
@@ -92,7 +91,7 @@ public class AgentController {
      * to his current shortest path
      */
     private static void nextDestination(Client game, List<Pokemon> pokemons, List<Agent> agents) {
-        double timeAv = 0;
+        double timeAv;
         double min = Integer.MAX_VALUE;
         for (int i = 0; i < agents.size(); i++) {
 
