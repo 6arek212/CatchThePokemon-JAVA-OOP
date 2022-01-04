@@ -2,7 +2,6 @@ package json_impl;
 
 import api.EdgeData;
 import com.google.gson.annotations.SerializedName;
-
 public class jsonEdgeData {
     @SerializedName("src")
     private int src;
@@ -18,7 +17,6 @@ public class jsonEdgeData {
     }
 
     public int getSrc() {
-
         return src;
     }
 
@@ -41,6 +39,4 @@ public class jsonEdgeData {
     public void setWeight(double weight) {
         this.weight = weight;
     }
-
-
 }

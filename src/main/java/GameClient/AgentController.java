@@ -9,6 +9,7 @@ import api.NodeData;
 import implementation.AlgorithmsImpl;
 
 import java.util.*;
+
 /**
  * This class represent an overall algorithm for the game
  */
@@ -16,14 +17,12 @@ public class AgentController {
 
     private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
-    private static GameFrame gameFrame;
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
     public static double ms = 100;
     public static long id = -1;
 
-    public AgentController(DirectedWeightedGraph graph, GameWorld gameWorld, GameFrame gameFrame) {
+    public AgentController(DirectedWeightedGraph graph, GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        this.gameFrame = gameFrame;
         this.graph = graph;
 
     }
@@ -46,6 +45,7 @@ public class AgentController {
         assignPokemons(pokemons, agents, Algo);
         nextDestination(game, pokemons, agents);
 
+
     }
 
 
@@ -57,7 +57,6 @@ public class AgentController {
         int src, dest;
         int count = 0;
         while (!listPriorityQueue.isEmpty() && count < agents.size()) {
-            System.out.println(listPriorityQueue);
 
             List<Double> minAgentPok = listPriorityQueue.poll();
             //getting the pokemon index in pokemons list
@@ -89,44 +88,12 @@ public class AgentController {
 
 
     /**
-     * Estimate time for specific  agent the Pokémon assign to him
-     * using motion equation
-     */
-    public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
-        var e = agent.getCurrEdge();
-        var p = pokemons.get(agent.getCurrPok());
-        var agentPos = agent.getPos();
-        var speed = agent.getSpeed();
-        var w = e.getWeight();
-        double estimatedTime = 100;
-
-        if (e != null) {
-            GeoLocation dest = graph.getNode(e.getDest()).getLocation();
-            GeoLocation src = graph.getNode(e.getSrc()).getLocation();
-            double de = src.distance(dest);
-            double dist = agentPos.distance(dest);
-
-            //if the agent and the pokemon on the same edge dist is the destination between them
-            if (p.getEdge().getSrc() == e.getSrc() && p.getEdge().getDest() == e.getDest()) {
-                dist = agentPos.distance(p.getPos());
-            }
-            //motion equation
-            double n = dist / de;
-            double dt = w * n / speed;
-            //to millis seconds
-            estimatedTime = (1000.0 * dt);
-        }
-
-        return estimatedTime;
-
-    }
-
-    /**
      * Giving the next destination for every agent according
      * to his current shortest path
      */
     private static void nextDestination(Client game, List<Pokemon> pokemons, List<Agent> agents) {
         double timeAv = 0;
+        double min = Integer.MAX_VALUE;
         for (int i = 0; i < agents.size(); i++) {
 
             Agent agent = agents.get(i);
@@ -134,12 +101,17 @@ public class AgentController {
             if (!path.isEmpty()) {
                 int next = path.removeFirst().getKey();
                 agent.setNextNode(next);
+
+                //estimating time for each agent and take the min time
                 timeAv = estimateTime(pokemons, agent);
+                if(timeAv<min){
+                    min = timeAv;
+                }
+
                 game.chooseNextEdge("{\"agent_id\":" + i + ", \"next_node_id\": " + next + "}");
-                System.out.println(agent);
 
             }
-            ms = timeAv;
+            ms = min;
 
         }
     }
@@ -187,6 +159,40 @@ public class AgentController {
             }
         }
     }
+
+    /**
+     * Estimate time for specific  agent the Pokémon assign to him
+     * using motion equation
+     */
+    public static double estimateTime(List<Pokemon> pokemons, Agent agent) {
+        var e = agent.getCurrEdge();
+        var p = pokemons.get(agent.getCurrPok());
+        var agentPos = agent.getPos();
+        var speed = agent.getSpeed();
+        var w = e.getWeight();
+        double estimatedTime = 100;
+
+        if (e != null) {
+            GeoLocation dest = graph.getNode(e.getDest()).getLocation();
+            GeoLocation src = graph.getNode(e.getSrc()).getLocation();
+            double de = src.distance(dest);
+            double dist = agentPos.distance(dest);
+
+            //if the agent and the pokemon on the same edge dist is the destination between them
+            if (p.getEdge().getSrc() == e.getSrc() && p.getEdge().getDest() == e.getDest()) {
+                dist = agentPos.distance(p.getPos());
+            }
+            //motion equation
+            double n = dist / de;
+            double dt = w * n / speed;
+            //to millis seconds
+            estimatedTime = (1000.0 * dt);
+        }
+
+        return estimatedTime;
+
+    }
+
 
 
 

@@ -141,7 +141,7 @@ public class GameWorld {
 
 
     // load the json file
-    public DirectedWeightedGraph fromJsonToGraph(String json) {
+    public DirectedWeightedGraph fromJsonToGraphGame(String json) {
         DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl();
         fromJsonStringToFile(json);
         algo.load("A.json");

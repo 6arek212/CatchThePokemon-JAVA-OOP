@@ -1,5 +1,9 @@
 package GameGui;
 
+import api.EdgeData;
+import api.NodeData;
+import implementation.NodeDataImpl;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +14,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * This class represent an opening menu for the game.
@@ -17,9 +22,9 @@ import java.io.IOException;
  */
 public class LoginFrame extends JFrame implements ActionListener {
 
-    private static JLabel idLabel;
+    private static JLabel idLab;
     private static JTextField idField;
-    private static JButton lodinButton;
+    private static JButton lodingButton;
     private static ImageIcon logo;
     public boolean isTurn = true;
     public int id;
@@ -37,21 +42,21 @@ public class LoginFrame extends JFrame implements ActionListener {
 //        frame.setBackground(Color.yellow);
         frame.setLocationRelativeTo(null);
         panel.setLayout(null);
-        idLabel = new JLabel("Enter ID:");
-        idLabel.setBounds(15, 15, 80, 25);
-        panel.add(idLabel);
+        idLab = new JLabel("Enter ID:");
+        idLab.setBounds(15, 15, 80, 25);
+        panel.add(idLab);
         idField = new JTextField(20);
         idField.setBounds(90, 10, 160, 25);
         idField.setPreferredSize(new Dimension(200,200));
         panel.add(idField);
-        lodinButton = new JButton("Login");
-        lodinButton.setBounds(110, 90, 300, 200);
+        lodingButton = new JButton("Login");
+        lodingButton.setBounds(110, 90, 300, 100);
         imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login.png");
-        lodinButton.setIcon(imageIcon);
+        lodingButton.setIcon(imageIcon);
 
-        lodinButton.addActionListener(new LoginFrame());
-        panel.add(lodinButton);
-        lodinButton.addActionListener(this);
+        lodingButton.addActionListener(new LoginFrame());
+        panel.add(lodingButton);
+        lodingButton.addActionListener(this);
         frame.setIconImage(backRounder);
         frame.setVisible(true);
     }

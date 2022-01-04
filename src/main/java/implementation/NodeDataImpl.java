@@ -10,53 +10,36 @@ import json_impl.jsonDataNode;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+
 public class NodeDataImpl implements NodeData {
+    public final static int WHITE = 1;
+    public final static int GRAY = 2;
+    public final static int BLACK = 3;
+
     private int key;
-    private double weight;
-    static final int WHITE = 1, GRAY = -1, BLACK = 0;
     private int tag;
-    private GeoLocation GeoLoc;
+    private GeoLocation location;
+    private double weight;
     private String info;
-    private Shape visualNode;
 
-
-    private static final int r =5;
-
-
-    public NodeDataImpl(int key, GeoLocation GeoLoc) {
-        this.key = key;
-        this.weight = 0;
-        this.tag = WHITE;
-        this.GeoLoc = GeoLoc;
-
-
-        this.info = "";
-    }
-    public NodeDataImpl(GeoLocation GeoLoc , Range2Range WorldToFrame) {
-
-        this.GeoLoc = GeoLoc;
-        Point fp = WorldToFrame.worldToframe((Point) this.GeoLoc);
-        this.visualNode = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
-
-
-    }
-
-    public NodeDataImpl( jsonDataNode nd ) {
+    public NodeDataImpl(jsonDataNode nd) {
         this.key = nd.getKey();
         this.tag = NodeDataImpl.WHITE;
-        this.GeoLoc = new Point(nd.getLocationString());
-
-        this.info = "";
+        this.location = new Point(nd.getLocationString());
+        this.info = null;
     }
+
     public NodeDataImpl(NodeData node) {
         this.key = node.getKey();
         this.tag = node.getTag();
+        this.location = new Point(node.getLocation());
         this.info = node.getInfo();
     }
 
-    public Shape getVisualNode(){
-        return this.visualNode;
-
+    public NodeDataImpl(int key, GeoLocation g) {
+        this.key = key;
+        this.tag = NodeDataImpl.WHITE;
+        this.location = g;
     }
 
     @Override
@@ -66,12 +49,12 @@ public class NodeDataImpl implements NodeData {
 
     @Override
     public GeoLocation getLocation() {
-        return this.GeoLoc;
+        return this.location;
     }
 
     @Override
     public void setLocation(GeoLocation p) {
-        this.GeoLoc = p;
+        this.location = p;
     }
 
     @Override
@@ -86,13 +69,12 @@ public class NodeDataImpl implements NodeData {
 
     @Override
     public String getInfo() {
-
         return this.info;
     }
 
     @Override
     public void setInfo(String s) {
-       this.info = s;
+        this.info = s;
     }
 
     @Override
@@ -103,12 +85,16 @@ public class NodeDataImpl implements NodeData {
     @Override
     public void setTag(int t) {
         this.tag = t;
-
     }
 
-
-    public  String toString(){
-
-        return "key: " +this.key;
+    @Override
+    public String toString() {
+        return "NodeDataImpl{" +
+                "key=" + key +
+                ", tag=" + tag +
+                ", location=" + location +
+                ", weight=" + weight +
+                ", info='" + info + '\'' +
+                '}';
     }
 }

@@ -57,12 +57,12 @@ public class GameRunner implements Runnable {
             e.printStackTrace();
         }
         gameWorld = new GameWorld();
-        graph = gameWorld.fromJsonToGraph(game.getGraph());
+        graph = gameWorld.fromJsonToGraphGame(game.getGraph());
         DirectedWeightedGraphAlgorithms ga = new AlgorithmsImpl();
         ga.init(graph);
         game.login(Long.toString(id));
         initGame(game);
-        AgentController agentController = new AgentController(graph , gameWorld , gameFrame);
+        AgentController agentController = new AgentController(graph , gameWorld );
         game.addAgent("{\"id\":0}");
         game.start();
         while (game.isRunning().equals("true")) {
@@ -98,6 +98,7 @@ public class GameRunner implements Runnable {
             p.sort(Comparator.comparingInt(o -> (int) o.getValue()));
             gameWorld.updatePokemonsEdges(p);
             System.out.println(agentSize);
+            Random random = new Random();
             for (int i = 0; i < agentSize; i++) {
                 game.addAgent("{\"id\":" + i + "}");
             }

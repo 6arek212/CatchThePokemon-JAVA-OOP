@@ -19,181 +19,139 @@ import java.util.*;
 import java.io.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
+
 public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
+    private DirectedWeightedGraph graph;
 
-
-    private DirectedWeightedGraph g;
-    private DirectedWeightedGraph reverseGraph;
-
-
-    //    public AlgorithmsImpl(DirectedWeightedGraph g) {
-//        this.g = g;
-//
-//    }
     public AlgorithmsImpl() {
-
-
+        this.graph = new DirectedWeightedGraphImpl();
     }
+
+    public AlgorithmsImpl(DirectedWeightedGraph graph) {
+        this.graph = new DirectedWeightedGraphImpl(graph);
+    }
+
+    public AlgorithmsImpl(String file) {
+        if (!load(Paths.get("").toAbsolutePath() + "/src/main/java/assignment2/data/" + file))
+            throw new RuntimeException("Error something went wrong while loading json file");
+    }
+
 
     @Override
     public void init(DirectedWeightedGraph g) {
-        this.g = g;
-
+        this.graph = new DirectedWeightedGraphImpl(g);
     }
 
     @Override
     public DirectedWeightedGraph getGraph() {
-
-        return this.g;
+        return this.graph;
     }
 
     @Override
     public DirectedWeightedGraph copy() {
-
-
-        DirectedWeightedGraph new_graph = new DirectedWeightedGraphImpl();
-        for (Iterator<NodeData> it = this.g.nodeIter(); it.hasNext(); ) {
-            NodeData NodeCopy = it.next();
-
-            for (Iterator<EdgeData> iter = this.g.edgeIter(NodeCopy.getKey()); iter.hasNext(); ) {
-                EdgeData EdgeCopy = iter.next();
-                new_graph.connect(NodeCopy.getKey(), EdgeCopy.getDest(), EdgeCopy.getWeight());
-
-            }
-
-
-        }
-        for (Iterator<NodeData> it = this.g.nodeIter(); it.hasNext(); ) {
-            NodeData nodeCopy = it.next();
-            NodeData newNode = this.g.getNode(nodeCopy.getKey());
-            new_graph.addNode(newNode);
-            String newInfo = nodeCopy.getInfo();
-            new_graph.getNode(nodeCopy.getKey()).setInfo(newInfo);
-
-        }
-
-        return new_graph;
-
-    }
-
-    @Override
-    public boolean isConnected() {
-
-
-        if (SCC().size() == 1)
-            return true;
-
-
-        return false;
+        return new DirectedWeightedGraphImpl(this.graph);
     }
 
 
-    public List<Set<NodeData>> SCC() {
-
-        Deque<NodeData> stack = new ArrayDeque<>();
-        Set<NodeData> visited = new HashSet<>();
-
-
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
-            NodeData node = it.next();
-            if (visited.contains(node)) {
-                continue;
-            }
-
-            DFS(node, visited, stack);
-        }
-
-        this.reverseGraph = reverse();
-        visited.clear();
-        List<Set<NodeData>> components = new ArrayList<>();
-        while (!stack.isEmpty()) {
-
-            NodeData n = reverseGraph.getNode(stack.poll().getKey());
-            if (visited.contains(n)) {
-                continue;
-            }
-            //storing the one scc
-            Set<NodeData> set = new HashSet<>();
-
-            DFSForReverseGraph(n, visited, set);
-            components.add(set);
-
-
-        }
-
-
-        return components;
-    }
-
-    //second DFS on reversed Graph
-    private void DFSForReverseGraph(NodeData n, Set<NodeData> visited, Set<NodeData> set) {
-        visited.add(n);
-        set.add(n);
-        for (Iterator<EdgeData> it = reverseGraph.edgeIter(n.getKey()); it.hasNext(); ) {
-            EdgeData e = it.next();
-            NodeData curr = reverseGraph.getNode(e.getDest());
-            if (visited.contains(curr)) {
-                continue;
-            }
-            DFSForReverseGraph(curr, visited, set);
-        }
-
-
-    }
-
-    private DirectedWeightedGraph reverse() {
+    /**
+     * get the transpose of the graph
+     * complexity  O(V+E)
+     */
+    private DirectedWeightedGraph reverse(DirectedWeightedGraph graph) {
         DirectedWeightedGraph reverseGraph = new DirectedWeightedGraphImpl();
-
-        for (Iterator<EdgeData> it = g.edgeIter(); it.hasNext(); ) {
+        Iterator<EdgeData> it = graph.edgeIter();
+        while (it.hasNext()) {
             EdgeData edge = it.next();
-//            System.out.println("No reverse: " + edge);
-
-            reverseGraph.addNode(g.getNode(edge.getSrc()));
-            reverseGraph.addNode(g.getNode(edge.getDest()));
+            reverseGraph.addNode(graph.getNode(edge.getSrc()));
+            reverseGraph.addNode(graph.getNode(edge.getDest()));
             reverseGraph.connect(edge.getDest(), edge.getSrc(), edge.getWeight());
-
-        }
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
-            NodeData nodeData = it.next();
-            reverseGraph.addNode(nodeData);
-
         }
 
+        Iterator<NodeData> iterator = graph.nodeIter();
+        while (iterator.hasNext()) {
+            NodeData nodeData = iterator.next();
+            reverseGraph.addNode(new NodeDataImpl(nodeData));
+        }
         return reverseGraph;
     }
 
-    //First DFS
-    private void DFS(NodeData node, Set<NodeData> visited, Deque<NodeData> stack) {
 
-        visited.add(node);
-        for (Iterator<EdgeData> it = g.edgeIter(node.getKey()); it.hasNext(); ) {
-
-            EdgeData e = it.next();
-
-            NodeData curr = g.getNode(e.getDest());
-            if (visited.contains(curr)) {
-                continue;
+    /**
+     * DFS scan
+     *
+     * @param g         directed graph
+     * @param node      the starting node
+     * @param nodesList to store the path
+     */
+    private void dfsVisit(DirectedWeightedGraph g, NodeData node, List<NodeData> nodesList) {
+        node.setTag(NodeDataImpl.GRAY);
+        g.edgeIter(node.getKey()).forEachRemaining((EdgeData ed) -> {
+            NodeData nd = g.getNode(ed.getDest());
+            if (nd.getTag() == NodeDataImpl.WHITE) {
+                dfsVisit(g, nd, nodesList);
             }
-            DFS(curr, visited, stack);
-        }
-
-        stack.offerFirst(node);
-
+        });
+        nodesList.add(0, node);
+        node.setTag(NodeDataImpl.BLACK);
     }
 
+    private List<NodeData> dfs(DirectedWeightedGraph g, List<NodeData> nodesList, boolean reversed) {
+        for (NodeData d : nodesList) {
+            d.setTag(NodeDataImpl.WHITE);
+        }
+
+        List<NodeData> p = new ArrayList<>();
+        for (NodeData d : nodesList) {
+            if (d.getTag() == NodeDataImpl.WHITE)
+                dfsVisit(g, d, p);
+            if (reversed)
+                return p;
+        }
+        return p;
+    }
+
+
+    /**
+     * check if there is only one strongly connected component
+     * Algorithm: two DFS call's after the first one invert the edges
+     * complexity : O(V+E)
+     *
+     * @return is the graph connected True , False
+     */
     @Override
+    public boolean isConnected() {
+        DirectedWeightedGraph graph = copy();
+        Iterator<NodeData> iterator = graph.nodeIter();
+        List<NodeData> nodes = new ArrayList<>();
+        while (iterator.hasNext()) {
+            nodes.add(iterator.next());
+        }
+        return dfs(reverse(graph), dfs(graph, nodes, false), true).size() == graph.nodeSize();
+    }
+
+
+
+    /**
+     * Dijkstra algorithm O(|V|^2)
+     *
+     * @param src  - start node
+     * @param dest - end (target) node
+     * @return path for the shortest path between src and dest
+     */
+
+        @Override
     public List<NodeData> shortestPath(int src, int dest) {
         HashMap<Integer, NodeData> dist = new HashMap<Integer, NodeData>();
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
+        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
             NodeData nodeData = it.next();
             nodeData.setWeight(Integer.MAX_VALUE);
         }
         HashMap<Integer, LinkedList<NodeData>> shortestPathMap = new HashMap<>();
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
+        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
             NodeData nodeData = it.next();
             shortestPathMap.put(nodeData.getKey(), new LinkedList<>());
         }
-        NodeData start = g.getNode(src);
+        NodeData start = graph.getNode(src);
         start.setWeight(0);
         dist.put(src, start);
         while (!dist.isEmpty()) {
@@ -206,11 +164,11 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
             dist.remove(curr);
             LinkedList<NodeData> currentNodePath;
             currentNodePath = shortestPathMap.get(curr);
-            for (Iterator<EdgeData> it = (g.edgeIter(curr)); it.hasNext(); ) {
+            for (Iterator<EdgeData> it = (graph.edgeIter(curr)); it.hasNext(); ) {
                 EdgeData n = it.next();
                 int neighbor = n.getDest();
-                double distanceToNeighbor = g.getEdge(curr, neighbor).getWeight() + currWeight;
-                NodeData neighborNode = g.getNode(neighbor);
+                double distanceToNeighbor = graph.getEdge(curr, neighbor).getWeight() + currWeight;
+                NodeData neighborNode = graph.getNode(neighbor);
                 if (distanceToNeighbor < neighborNode.getWeight()) {
                     LinkedList<NodeData> currentNeighborPath = new LinkedList<>(currentNodePath);
                     currentNeighborPath.add(neighborNode);
@@ -227,11 +185,11 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
     @Override
     public double shortestPathDist(int src, int dest) {
         HashMap<Integer, NodeData> dist = new HashMap<Integer, NodeData>();
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
+        for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
             NodeData nodeData = it.next();
             nodeData.setWeight(Integer.MAX_VALUE);
         }
-        NodeData start = g.getNode(src);
+        NodeData start = graph.getNode(src);
         start.setWeight(0);
         dist.put(src, start);
         while (!dist.isEmpty()) {
@@ -242,11 +200,11 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
             int curr = currentNode.getKey();
             double currWeight = currentNode.getWeight();
             dist.remove(curr);
-            for (Iterator<EdgeData> it = g.edgeIter(curr); it.hasNext(); ) {
+            for (Iterator<EdgeData> it = graph.edgeIter(curr); it.hasNext(); ) {
                 EdgeData e = it.next();
                 Integer neighbor=e.getDest();
-                double distanceToNeighbor = g.getEdge(curr, neighbor).getWeight() + currWeight;
-                NodeData neighborNode=g.getNode(neighbor);
+                double distanceToNeighbor = graph.getEdge(curr, neighbor).getWeight() + currWeight;
+                NodeData neighborNode=graph.getNode(neighbor);
                 if (distanceToNeighbor < neighborNode.getWeight() ) {
                     neighborNode.setWeight(distanceToNeighbor);
                     dist.put(neighbor, neighborNode);
@@ -254,7 +212,7 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
             }
         }
 
-        double distance = g.getNode(dest).getWeight();
+        double distance = graph.getNode(dest).getWeight();
 
         return distance;
     }
@@ -271,47 +229,48 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
 
         return minNode;
     }
-
-
-    public double maxInThePath(NodeData nodeData) {
-        double max = Integer.MIN_VALUE;
-
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
-            NodeData node = it.next();
-            if (nodeData.getKey() != node.getKey()) {
-                double shortestP = shortestPathDist(nodeData.getKey(), node.getKey());
-                if (max < shortestP) {
-                    max = shortestP;
-
-
-                }
-
-            }
-        }
-        return max;
-    }
-
     @Override
     public NodeData center() {
-        if (g.nodeSize() == 0) {
+        if (!isConnected() || graph.nodeSize() == 0)
             return null;
-        }
+        Iterator<NodeData> t = graph.nodeIter();
+        double currentMin = Integer.MAX_VALUE;
+        int node = -1;
 
-        double min = Integer.MAX_VALUE;
-        NodeData ans = null;
-
-        for (Iterator<NodeData> it = g.nodeIter(); it.hasNext(); ) {
-            NodeData node = it.next();
-            double temp = maxInThePath(node);
-            if (temp < min) {
-                min = temp;
-                ans = node;
-
+        while (t.hasNext()) {
+            NodeData nd = t.next();
+            double distance = getMaxDistance(nd.getKey());
+            if (distance < currentMin) {
+                currentMin = distance;
+                node = nd.getKey();
             }
-
         }
-        return ans;
+
+        return graph.getNode(node);
     }
+
+
+    /**
+     * assumes the graph is strongly connected , get the max distance from the node src
+     *
+     * @param src the node source key
+     * @return max distance from this node to any other
+     */
+    private double getMaxDistance(int src) {
+        double nodeMaxDist = Integer.MIN_VALUE;
+
+        Iterator<NodeData> it = graph.nodeIter();
+        while (it.hasNext()) {
+            double d = shortestPathDist(src, it.next().getKey());
+            if (nodeMaxDist < d) {
+                nodeMaxDist = d;
+            }
+        }
+
+        return nodeMaxDist;
+    }
+
+
 
     //Time Complexity: Worst Case n*(E+V*Log(V))
     @Override
@@ -333,7 +292,6 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
 
 
             List<NodeData> tmp = shortestPath(src, dest);
-            System.out.println("src: " + src + ", dest: " + dest + " -> " + tmp);
             //remove all cities we already visited
             targetTo.removeAll(tmp);
             res.addAll(tmp);
@@ -344,16 +302,16 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
             }
 
         }
-
         return res;
     }
+
 
 
     @Override
     public boolean save(String file) {
         boolean state = true;
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement je = JsonParser.parseString(new Gson().toJson(new fromJsonToGraph(this.g)));
+        JsonElement je = JsonParser.parseString(new Gson().toJson(new fromJsonToGraph(this.graph)));
         String prettyJsonString = gson.toJson(je);
         try {
             FileWriter fr = new FileWriter(file);
@@ -370,26 +328,10 @@ public class AlgorithmsImpl implements DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean load(String file) {
-        this.g = DirectedWeightedGraphImpl.load(file);
-        if (this.g != null)
+        this.graph = DirectedWeightedGraphImpl.load(file);
+        if (this.graph != null)
             return true;
         return false;
     }
-
-
-
-
-    public Double getRouteCost(List<NodeData> nodes) {
-        double tempCost = 0;
-        // Add route costs
-
-        for (int i = 0; i < nodes.size() - 1; i++) {
-            tempCost += g.getEdge(nodes.get(i).getKey(), nodes.get(i + 1).getKey()).getWeight();
-
-        }
-        return tempCost;
-    }
-
-
 }
 
