@@ -111,7 +111,7 @@ public class Game {
             waitAndMode(sleepTime);
             this.info = Info.load(client.getInfo());
         }
-
+        this.status = false;
         this.info = Info.load(client.getInfo());
         System.out.println(this.info);
         try {
