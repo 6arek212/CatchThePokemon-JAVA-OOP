@@ -28,6 +28,7 @@ public class Game {
     private ActionListener actionListener;
     private Info info;
     public int maxMoves;
+    public boolean status;
 
     public Game(Client client, ActionListener actionListener) {
         this.client = client;
@@ -42,6 +43,7 @@ public class Game {
      * Initialize the game , get Graph , get Agents , get Pokemons
      */
     private void init() {
+        client.login("123");
         this.algo.init(DirectedWeightedGraphImpl.load(client.getGraph()));
         Info info = Info.load(client.getInfo());
         System.out.println("agents " + info.getAgents());
@@ -70,11 +72,8 @@ public class Game {
      * game starting point on a separate thread
      */
     public void start() {
-        client.start();
-        System.out.println("Game starting ....... ");
-        this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
-        System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
-        new Thread(this::startGame).start();
+        this.status = true;
+        new Thread(this::startGame);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable helloRunnable = () -> {
@@ -86,30 +85,39 @@ public class Game {
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
+    public void stopTheGame() {
+        this.status = false;
+    }
+
 
     /**
      * starts the  game
      */
     private void startGame() {
-        while (client.isRunning().equals("true") && info.getMoves() <= maxMoves) {
+        client.start();
+        this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
+        System.out.println("Game starting ....... ");
+        System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
+
+        while (client.isRunning().equals("true") && info.getMoves() <= maxMoves && status) {
             updateAgents();
             updatePokemons();
             actionListener.actionEvent(new UIEvents.UpdateUi());
             allocateAgents();
-
             long sleepTime;
             sleepTime = (long) (getProperWaitingTime() * 1000);
-
+            if (sleepTime > Integer.parseInt(client.timeToEnd()))
+                break;
             waitAndMode(sleepTime);
-            if (client.isRunning().equals("true"))
-                this.info = Info.load(client.getInfo());
+            this.info = Info.load(client.getInfo());
         }
-        System.out.println(this.info);
 
-        client.stop();
+        this.info = Info.load(client.getInfo());
+        System.out.println(this.info);
         try {
+            client.stop();
             client.stopConnection();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

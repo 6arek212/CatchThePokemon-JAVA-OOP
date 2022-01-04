@@ -46,6 +46,9 @@ public class GraphViewModel {
         }
     }
 
+    public void stopTheGame() {
+        game.stopTheGame();
+    }
 
     public DirectedWeightedGraphAlgorithms getAlgo() {
         return game.getAlgo();

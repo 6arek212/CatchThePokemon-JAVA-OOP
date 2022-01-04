@@ -19,7 +19,7 @@ public class GraphViewFrame extends JFrame {
     private GraphViewPanel panel;
 
     public GraphViewFrame(Client client) {
-        this.panel = new GraphViewPanel( client);
+        this.panel = new GraphViewPanel(client);
         panel.setBackground(Color.BLACK);
         //initLabels();
         add(panel);
@@ -52,8 +52,6 @@ public class GraphViewFrame extends JFrame {
         add(numberOfEdges);
         add(numberOfNodes);
     }
-
-
 
 
 }
