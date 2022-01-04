@@ -9,8 +9,11 @@ import api.*;
 import implementation.NodeDataImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
@@ -21,17 +24,21 @@ public class GamePanel extends JPanel {
     protected static DirectedWeightedGraph graph;
     private GameWorld gameWorld;
     private Range2Range WorldToFrame;
-    private GameFrame frame;
     private Image image, image2, image3, BackRoundImage;
     private int time, duration = -1, grade, moves, level;
     private JLabel InfoLabel = new JLabel();
+    private JButton closeButton = new JButton();
 
     GamePanel(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         graph = gameWorld.getGraph();
         this.setPreferredSize(new Dimension(1000, 700));
         this.setFocusable(true);
+        closeButton.setPreferredSize(new Dimension(100, 20));
+        closeButton.setText("Stop Game");
+        closeButton.addActionListener(e->{GameRunner.game.stop(); System.exit(0);});
         this.add(InfoLabel);
+        this.add(closeButton);
         image = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\ball.gif"))).getImage();
         image2 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\nezu.gif"))).getImage();
         image3 = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
@@ -88,6 +95,7 @@ public class GamePanel extends JPanel {
 
 
         }
+
         gameData();
         InfoLabel.setText("Level: " + level + "   Timer: " + time + "/" + duration + "   Grade: " + grade + "     Moves: " + moves + "/" + duration * 10 + "");
         drawAgents(g2d);
@@ -169,9 +177,8 @@ public class GamePanel extends JPanel {
         Shape node = new Ellipse2D.Double((int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r);
         g.drawImage(image3, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
         g.setFont(new Font("David", Font.PLAIN, 15));
-        g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() -  r);
+        g.drawString("" + n.getKey(), (int) fp.x(), (int) fp.y() - r);
 
     }
-
 
 }

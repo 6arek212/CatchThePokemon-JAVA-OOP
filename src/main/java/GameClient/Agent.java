@@ -76,8 +76,12 @@ public class Agent {
         return isMoving;
     }
 
-    private void setCurrNode(int src) {
+    public void setCurrNode(int src) {
         this.currNode = g.getNode(src);
+    }
+
+    public NodeData getCurrNode() {
+        return this.currNode;
     }
 
     public int getId() {
@@ -106,6 +110,10 @@ public class Agent {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    public double getValue() {
+        return this.value;
     }
 
     public void setPos(GeoLocation pos) {

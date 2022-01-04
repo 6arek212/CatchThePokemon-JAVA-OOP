@@ -24,7 +24,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     private static JLabel idLab;
     private static JTextField idField;
-    private static JButton lodingButton;
+    private static JButton loginButton;
     private static ImageIcon logo;
     public boolean isTurn = true;
     public int id;
@@ -33,13 +33,14 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     public void Login(){
         JFrame frame = new JFrame();
-        backRounder = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
 
+        backRounder = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
+        imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login2.png");
         frame.setSize(500, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
+        panel.setBackground(Color.yellow);
         frame.add(panel);
-//        frame.setBackground(Color.yellow);
         frame.setLocationRelativeTo(null);
         panel.setLayout(null);
         idLab = new JLabel("Enter ID:");
@@ -49,14 +50,14 @@ public class LoginFrame extends JFrame implements ActionListener {
         idField.setBounds(90, 10, 160, 25);
         idField.setPreferredSize(new Dimension(200,200));
         panel.add(idField);
-        lodingButton = new JButton("Login");
-        lodingButton.setBounds(110, 90, 300, 100);
-        imageIcon = new ImageIcon("src\\main\\java\\GameGui\\tools\\login.png");
-        lodingButton.setIcon(imageIcon);
-
-        lodingButton.addActionListener(new LoginFrame());
-        panel.add(lodingButton);
-        lodingButton.addActionListener(this);
+        loginButton = new JButton("Play");
+        loginButton.setBounds(110, 90, 300, 100);
+        loginButton.setHorizontalTextPosition(JButton.LEFT);
+        loginButton.setFont(new Font("Comic Sans" , Font.ITALIC , 15));
+        loginButton.setIcon(imageIcon);
+        loginButton.addActionListener(new LoginFrame());
+        panel.add(loginButton);
+        loginButton.addActionListener(this);
         frame.setIconImage(backRounder);
         frame.setVisible(true);
     }

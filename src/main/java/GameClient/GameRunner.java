@@ -7,6 +7,7 @@ import api.*;
 import implementation.AlgorithmsImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -48,8 +49,8 @@ public class GameRunner implements Runnable {
         ga.init(graph);
         game.login(Long.toString(id));
         initGame(game);
-        AgentController agentController = new AgentController(graph , gameWorld );
-        game.addAgent("{\"id\":0}");
+        AgentController agentController = new AgentController(graph, gameWorld);
+//        game.addAgent("{\"id\":0}");
         game.start();
         while (game.isRunning().equals("true")) {
             agentController.moveAgents(game);
@@ -57,12 +58,13 @@ public class GameRunner implements Runnable {
             gameWorld.setTimeToend((Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
             gameWorld.setInfo(game.getInfo());
             try {
-                Thread.sleep((long)AgentController.ms);
+                Thread.sleep((long) AgentController.ms);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        game.stop();
+
+
         System.exit(0);
     }
 

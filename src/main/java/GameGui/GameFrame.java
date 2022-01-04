@@ -11,6 +11,7 @@ public class GameFrame extends JFrame {
 
     public GameFrame(GameWorld gameWorld) {
         gamePanel = new GamePanel(gameWorld);
+
         this.add(gamePanel);
         Image imageIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(("src\\main\\java\\GameGui\\tools\\pika.png"))).getImage();
         this.setTitle("Pokemon Game");
