@@ -73,7 +73,7 @@ public class Game {
      */
     public void start() {
         this.status = true;
-        new Thread(this::startGame);
+        new Thread(this::startGame).start();
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable helloRunnable = () -> {
@@ -98,6 +98,7 @@ public class Game {
         this.maxMoves = (Integer.parseInt(client.timeToEnd()) / 1000) * 10;
         System.out.println("Game starting ....... ");
         System.out.println("\nMax Moves is :" + maxMoves + "\n\n");
+        System.out.println(status);
 
         while (client.isRunning().equals("true") && info.getMoves() <= maxMoves && status) {
             updateAgents();
