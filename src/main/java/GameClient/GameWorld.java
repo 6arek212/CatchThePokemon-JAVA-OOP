@@ -174,7 +174,7 @@ public class GameWorld {
 
     }
 
-    // ----------------------Graph Range---------------------------
+    // ----------------------Graph Range--------------------------
     private static Range2D GraphRange(DirectedWeightedGraph g) {
         Iterator<NodeData> itr = g.nodeIter();
         double x0 = 0, x1 = 0, y0 = 0, y1 = 0;
