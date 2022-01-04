@@ -49,8 +49,16 @@ public class Pokemon {
         return this.value;
     }
 
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     public Point getPos() {
         return this.pos;
+    }
+
+    public void setPos(Point p) {
+        this.pos = p;
     }
 
 

@@ -17,7 +17,6 @@ import java.util.List;
  * This class represent an Agent on the Game
  */
 
-
 public class Agent {
     private int id;
 

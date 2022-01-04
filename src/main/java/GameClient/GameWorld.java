@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.util.*;
 
 
+/**
+ * This class represent uploading data from the server
+ */
+
 public class GameWorld {
     public static final double EPS1 = 0.001 * 0.001;
     private DirectedWeightedGraph g;
@@ -152,7 +156,7 @@ public class GameWorld {
 
 
     //check if pokemon on edge with using distance equation
-    private static boolean CheckOnEdge(GeoLocation p, EdgeData e, int type, DirectedWeightedGraph g) {
+    public static boolean CheckOnEdge(GeoLocation p, EdgeData e, int type, DirectedWeightedGraph g) {
         int src = g.getNode(e.getSrc()).getKey();
         int dest = g.getNode(e.getDest()).getKey();
         if (type < 0 && dest > src) {
