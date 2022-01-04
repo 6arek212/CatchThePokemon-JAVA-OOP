@@ -77,9 +77,12 @@ without exceeding the number of moves allowed
 
 ## Algorithms Implementation
 
-**Game Algorithm**
+**Game Algorithm Idea**
 
-- Every agent will be assigned to the closest pokemon to him (a pokemon will no be assigned for more than one agent) 
+- Calculate the distance between each pokemon and agent and put them on priority queue
+- Take the best couple and attach them together, by attaching the pokemon to the agent no other agent can take it
+- Find the shortest path from the agent to his assigned pokemon using Dijkstra algorithm and let the agent follow the path
+- Calculate the estimated time for each agent to reach his pokemon and take the minimum time, doing that by using motion time equation
 
 
 
@@ -101,7 +104,7 @@ without exceeding the number of moves allowed
 ## Authors
 
 * **Tarik Husin**  - linkedin -> https://www.linkedin.com/in/tarik-husin-706754184/
-* **Wisam Kabha**  - github -> https://github.com/Wissam111
+* **Wissam Kabha**  - github -> https://github.com/Wissam111
 
 </br>
 
@@ -114,3 +117,5 @@ https://en.wikipedia.org/wiki/Travelling_salesman_problem
 https://www.youtube.com/watch?v=XB4MIexjvY0&t=484s
 
 https://www.youtube.com/watch?v=XaXsJJh-Q5Y&t=600s
+
+https://www.khanacademy.org/science/physics/one-dimensional-motion/displacement-velocity-time/v/solving-for-time
