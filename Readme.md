@@ -9,6 +9,11 @@
 
 #### A part of a university assignment
 
+
+![](imgs/game_running.gif)
+
+
+
 </br>
 
 ## Project Overview
@@ -17,13 +22,12 @@ Catch the pokemon game , The objective is to catch as many pokemons as possible 
 without exceeding the number of moves allowed 
 
 
-
+![](imgs/uml.png)
 
 </br>
 
 
 
-![](imgs/game_running.gif)
 
 
 
