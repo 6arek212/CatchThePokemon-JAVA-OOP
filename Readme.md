@@ -34,7 +34,7 @@ without exceeding the number of moves allowed
 
 `2 - From the terminal run the game: `
 
-    java -jar .\Ex4.jar
+    java -jar Ex4.jar <ID>
 
 **The jar must be placed in the java folder ! & make sure you have java 11 or greater**
 
