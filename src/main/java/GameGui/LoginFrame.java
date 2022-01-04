@@ -59,6 +59,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         panel.add(loginButton);
         loginButton.addActionListener(this);
         frame.setIconImage(backRounder);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 

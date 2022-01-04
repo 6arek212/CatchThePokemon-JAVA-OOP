@@ -1,0 +1,131 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+Ex4 "1" -- "1" GameRunner
+class Ex4{
+    +GameRunner start
+
+}
+
+
+class Agent{
+      -int id;
+      -double speed;
+      - DirectedWeightedGraph g;
+      - double value;
+      - boolean isMoving;
+      - GeoLocation pos;
+      - LinkedList<NodeData> agentCurrPath;
+      - int currPok;
+      - EdgeData currEdge;
+      - NodeData currNode;
+      +void updateAgent();
+
+}
+
+class Pokemon{
+    -double value;
+    -int type;
+    -Point pos;
+    -EdgeData edge;
+    -boolean isAssigned;
+}
+
+
+Agent  "1" -- "1"  GameWorld
+Pokemon "1" -- "1" GameWorld
+class GameWorld{
+    -static final double EPS1 = 0.001 * 0.001;
+    -DirectedWeightedGraph g;
+    -List<Agent> agents;
+    -List<Pokemon> pokemons;
+    -String info;
+    -long timeToend;
+    +List<Agent> getAgents();
+    +ArrayList<Pokemon> fromJsonStringToPoks();
+    +void updatePokemonsEdges();
+    +DirectedWeightedGraph fromJsonToGraphGame();
+    +boolean CheckOnEdge();
+}
+
+GameWorld "1" -- "1" AgentController
+class AgentController{
+    - DirectedWeightedGraph graph;
+    - GameWorld gameWorld;
+    - PriorityQueue<List<Double>> listPriorityQueue;
+    - double ms;
+    - long id;
+    + void moveAgents();
+    + void assignPokemons();
+    - void nextDestination();
+    + void addAllCouples();
+    + void estimateDistance();
+    + double estimateTime();
+}
+
+GameRunner "1" -- "1" AgentController
+class GameRunner{
+    -  DirectedWeightedGraph graph;
+    -  GameWorld gameWorld;
+    -  GameFrame gameFrame;
+    -  int agentSize;
+    +  Client game;
+    - long id;
+    + void run();
+    - initGame();
+}
+
+GamePanel "1" -- "1" GameRunner
+GameFrame "1" -- "1" GameRunner
+GameFrame "1" -- "1" GamePanel
+class GameFrame{
+   +GamePanel gamePanel;
+}
+
+class GamePanel{
+    - DirectedWeightedGraph graph;
+    - GameWorld gameWorld;
+    - Range2Range WorldToFrame;
+    - Image image, image2, image3, BackRoundImage;
+    - int time, duration , grade, moves, level;
+    - JLabel InfoLabel;
+    - JButton closeButton;
+
+
+}
+
+GameWorld "1" -- "1" DirectedWeightedGraph
+
+interface DirectedWeightedGraphAlgorithms{
+    + DirectedWeightedGraph getGraph();
+    + DirectedWeightedGraph copy();
+    + boolean isConnected();
+    + double shortestPathDist(int src, int dest);
+    + List<NodeData> shortestPath(int src, int dest);
+    + NodeData center();
+    + List<NodeData> tsp(List<NodeData> cities);
+    + boolean save(String file);
+    + boolean load(String file);
+}
+
+
+DirectedWeightedGraphAlgorithms "1" -- "1" DirectedWeightedGraph
+GameWorld "1" -- "1" DirectedWeightedGraphAlgorithms
+interface DirectedWeightedGraph{
+   	public EdgeData getEdge(int src, int dest);
+   	public void addNode(NodeData n);
+   	public void connect(int src, int dest, double w);
+   	public Iterator<NodeData> nodeIter();
+   	public Iterator<EdgeData> edgeIter();
+   	public Iterator<EdgeData> edgeIter(int node_id);
+   	public NodeData removeNode(int key);
+   	public EdgeData removeEdge(int src, int dest);
+   	public int nodeSize();
+   	public int edgeSize();
+   	public int getMC();
+}
+
+
+
+@enduml
