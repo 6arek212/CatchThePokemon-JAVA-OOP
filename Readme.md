@@ -6,9 +6,11 @@
 
 ![Builds](https://github.com/project-chip/connectedhomeip/workflows/Builds/badge.svg)
 
-![head](https://github.com/6arek212/CatchThePokemon-OOP-Assignment-4-JAVA/blob/wissam-v1/src/main/java/GameGui/tools/intro.gif)
+<img src="https://github.com/6arek212/CatchThePokemon-OOP-Assignment-4-JAVA/blob/wissam-v1/src/main/java/GameGui/tools/intro.gif" width="200px">
 
 
+
+## The Game In Action
 
 
 ![](imgs/game_running.gif)
