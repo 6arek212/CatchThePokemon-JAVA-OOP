@@ -8,7 +8,7 @@
 
 ## Project Overview
 
-Catch the pokemon game , the objective is to catch as many pokemons as possible ,
+Catch the pokemon game , The objective is to catch as many pokemons as possible ,
 without exceeding the number of moves allowed 
 
 
@@ -34,7 +34,6 @@ without exceeding the number of moves allowed
 
 
 
-
 ## What has been done ?
 - ### Game
     
@@ -42,6 +41,7 @@ without exceeding the number of moves allowed
     - Choose agents next destination
     - Display the game
     - Load json data from the server
+    - Time to get to a destination
 
 
 - ### Graph
