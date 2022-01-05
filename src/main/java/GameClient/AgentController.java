@@ -2,10 +2,7 @@ package GameClient;
 
 import GameClient.utils.Point;
 import GameGui.GameFrame;
-import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
-import api.GeoLocation;
-import api.NodeData;
+import api.*;
 import implementation.AlgorithmsImpl;
 
 import java.util.*;
@@ -18,7 +15,7 @@ public class AgentController {
     private static DirectedWeightedGraph graph;
     private static GameWorld gameWorld;
     private static PriorityQueue<List<Double>> listPriorityQueue = new PriorityQueue<>(Comparator.comparingDouble(o -> (o.get(2))));
-    public static double ms = 100;
+    public static double dt = 100;
     public static long id = -1;
 
     public AgentController(DirectedWeightedGraph graph, GameWorld gameWorld) {
@@ -63,9 +60,14 @@ public class AgentController {
             Pokemon pokemon = pokemons.get((int) p);
             Agent agent = agents.get((int) a);
             //if the agent is not moving and noOne Took the pokemon
-            if (!agent.isMoving()&&!pokemon.isAssigned()) {
+            if (!agent.isMoving() && !pokemon.isAssigned()) {
                 src = agents.get((int) a).getSrc();
-                dest = pokemon.getEdge().getSrc();
+                EdgeData e = pokemon.getEdge();
+                if ((e.getDest() > e.getSrc() && pokemon.getType() == 1 || e.getDest() < e.getSrc() && pokemon.getType() == -1) && getRatio(pokemon.getPos(), e, graph) > 0.13) {
+                    dest = e.getSrc();
+                } else {
+                    dest = e.getDest();
+                }
                 NodeData LastDestNode = graph.getNode(pokemon.getEdge().getDest());
                 LinkedList<NodeData> path = new LinkedList<>();
                 agent.setCurrPokemon((int) p);
@@ -101,14 +103,12 @@ public class AgentController {
 
                 //estimating time for each agent and take the min time
                 timeAv = estimateTime(pokemons, agent);
-                if(timeAv<min){
+                if (timeAv < min) {
                     min = timeAv;
                 }
-
                 game.chooseNextEdge("{\"agent_id\":" + i + ", \"next_node_id\": " + next + "}");
-
             }
-            ms = min;
+            dt = min;
 
         }
     }
@@ -118,26 +118,31 @@ public class AgentController {
      * Compute distance between each agent and Pokémon [pok , agent , dist]
      * and add them to Priority Queue to take the Pokémon and agent with the least dist
      */
-
     public void addAllCouples(List<Pokemon> pokemons, List<Agent> agents, DirectedWeightedGraph g) {
         gameWorld.updatePokemonsEdges(pokemons);
         DirectedWeightedGraphAlgorithms algo = new AlgorithmsImpl();
         algo.init(g);
         for (int i = 0; i < pokemons.size(); i++) {
             Pokemon pokemon = pokemons.get(i);
-            for(int j=0; j<agents.size(); j++){
-                estimateDistance(agents.get(j) , pokemon , i ,algo);
+            for (int j = 0; j < agents.size(); j++) {
+                estimateDistance(agents.get(j), pokemon, i, algo);
             }
         }
     }
-    public void estimateDistance(Agent agent  , Pokemon pokemon , int i , DirectedWeightedGraphAlgorithms algo  ){
+
+    public void estimateDistance(Agent agent, Pokemon pokemon, int i, DirectedWeightedGraphAlgorithms algo) {
         int src, dest;
         double dist, srcToDestPokEdge, locToSrcAgent;
         List<Double> agentToPok = new ArrayList<>();
         agentToPok.add(0, (double) i);
         agentToPok.add(1, (double) agent.getId());
         src = agent.getSrc();
-        dest = pokemon.getEdge().getSrc();
+        EdgeData e = pokemon.getEdge();
+        if ((e.getDest() > e.getSrc() && pokemon.getType() == 1 || e.getDest() < e.getSrc() && pokemon.getType() == -1) && getRatio(pokemon.getPos(), e, graph) > 0.13) {
+            dest = e.getSrc();
+        } else {
+            dest = e.getDest();
+        }
         if (src == dest) {
             dist = agent.getPos().distance(pokemon.getPos()) / agent.getSpeed();
             agentToPok.add(2, dist);
@@ -145,7 +150,7 @@ public class AgentController {
         } else {
             Point srcEdge = (Point) algo.getGraph().getNode(pokemon.getEdge().getSrc()).getLocation();
             Point destEdge = (Point) algo.getGraph().getNode(pokemon.getEdge().getDest()).getLocation();
-            Point srcAg = (Point)algo.getGraph().getNode(agent.getSrc()).getLocation();
+            Point srcAg = (Point) algo.getGraph().getNode(agent.getSrc()).getLocation();
             srcToDestPokEdge = srcEdge.distance(destEdge);
             locToSrcAgent = srcAg.distance(agent.getPos());
             dist = algo.shortestPathDist(src, dest) - srcToDestPokEdge + locToSrcAgent;
@@ -155,7 +160,6 @@ public class AgentController {
         listPriorityQueue.add(agentToPok);
 
     }
-
 
 
     /**
@@ -190,8 +194,16 @@ public class AgentController {
         return estimatedTime;
 
     }
-
-
-
-
+    /**
+     *  Returns approximately where is the position of a point on an edge
+     *  (for the Pokémon)
+     */
+    public static double getRatio(Point point, EdgeData e, DirectedWeightedGraph g) {
+        if (e == null)
+            return -1;
+        int src = e.getSrc();
+        int dest = e.getDest();
+        double ratio = g.getNode(src).getLocation().distance(point) / g.getNode(src).getLocation().distance(g.getNode(dest).getLocation());
+        return ratio;
+    }
 }

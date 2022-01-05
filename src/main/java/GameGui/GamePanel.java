@@ -142,12 +142,12 @@ public class GamePanel extends JPanel {
     }
 
     private final Color[] colors = new Color[]{
-            new Color(255, 0, 221),
-            new Color(27, 255, 0),
+            new Color(255, 0, 210),
+            new Color(10, 200, 0),
             new Color(0, 255, 247),
             new Color(255, 0, 0),
-            new Color(23, 4, 68),
-            new Color(23, 4, 68)
+            new Color(40, 40, 60),
+
     };
 
     private void drawAgents(Graphics2D g) {
@@ -163,7 +163,7 @@ public class GamePanel extends JPanel {
                 GeoLocation fp = WorldToFrame.worldToframe((Point) c);
 
                 g.drawImage(image2, (int) fp.x() - r, (int) fp.y() - r, 2 * r, 2 * r, this);
-                g.drawString("" + ag.getId(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
+                g.drawString("" + ag.getValue(), (int) fp.x() - 2 * r, (int) fp.y() - 2 * r);
 
             }
         }

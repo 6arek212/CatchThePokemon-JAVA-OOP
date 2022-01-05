@@ -126,7 +126,7 @@ public class Agent {
             return true;
         }
 
-        currEdge = null;
+//        currEdge = null;
         return false;
     }
 

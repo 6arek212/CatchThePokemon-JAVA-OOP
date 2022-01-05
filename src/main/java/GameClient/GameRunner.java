@@ -26,7 +26,6 @@ public class GameRunner implements Runnable {
     private long id;
 
 
-
     public GameRunner(long id) {
         this.id = id;
     }
@@ -58,12 +57,11 @@ public class GameRunner implements Runnable {
             gameWorld.setTimeToend((Integer.parseInt(GameRunner.game.timeToEnd()) / 1000));
             gameWorld.setInfo(game.getInfo());
             try {
-                Thread.sleep((long) AgentController.ms);
+                Thread.sleep((long) AgentController.dt);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
 
         System.exit(0);
     }
@@ -75,20 +73,33 @@ public class GameRunner implements Runnable {
         String pokz = game.getPokemons();
         gameWorld.setGraph(graph);
         gameWorld.setPokemons(GameWorld.fromJsonStringToPoks(pokz));
-        String info = game.getInfo();
         gameFrame = new GameFrame(gameWorld);
         gameFrame.repaint();
+        initAgents(game , gameWorld);
+
+    }
+
+    /**
+     * Put the agents on the edges that have the most valuable Pokémons
+     */
+    public void initAgents(Client game, GameWorld gameWorld) {
         try {
-            JSONObject infoObject = new JSONObject(info);
+            JSONObject infoObject = new JSONObject(game.getInfo());
             JSONObject GameServer = infoObject.getJSONObject("GameServer");
             agentSize = GameServer.getInt("agents");
-            ArrayList<Pokemon> p = GameWorld.fromJsonStringToPoks(game.getPokemons());
-            p.sort(Comparator.comparingInt(o -> (int) o.getValue()));
-            gameWorld.updatePokemonsEdges(p);
-            //System.out.println(agentSize);
-            Random random = new Random();
+            ArrayList<Pokemon> pokemons = GameWorld.fromJsonStringToPoks(game.getPokemons());
+            pokemons.sort((o1, o2) -> Double.compare(o2.getValue(), o1.getValue()));
+            gameWorld.updatePokemonsEdges(pokemons);
             for (int i = 0; i < agentSize; i++) {
-                game.addAgent("{\"id\":" + i + "}");
+                int tmp;
+                Pokemon p = pokemons.get(i);
+                EdgeData edge = p.getEdge();
+                if (p.getType() == -1) {
+                    tmp = Math.max(edge.getSrc(), edge.getDest());
+                } else {
+                    tmp = Math.min(edge.getSrc(), edge.getDest());
+                }
+                game.addAgent("{\"id\":" + tmp + "}");
             }
             gameWorld.setAgents(GameWorld.getAgents(game.getAgents(), graph));
         } catch (JSONException e) {
